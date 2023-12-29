@@ -8,6 +8,7 @@ namespace HotelReservation.Db.Models
         public PaymentStatusEnum PaymentStatus { get; set; }
         public DateTime PaymentDate { get; set; }
         public PaymentMethodEnum PaymentMethod { get; set; }
+        public double Amount { get; set; }
         public int ReservationId { get; set; }
         public Reservation Reservation { get; set; }
     }
