@@ -15,6 +15,5 @@ namespace HotelReservation.Db.Models
         public City City { get; set; }
         public List<FeaturedDeal> FeaturedDeals { get; set; } = new List<FeaturedDeal>();
         public List<Room> Rooms { get; set; } = new List<Room>();
-        public List<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }
