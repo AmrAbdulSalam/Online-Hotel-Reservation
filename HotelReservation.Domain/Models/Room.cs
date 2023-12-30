@@ -12,9 +12,20 @@ namespace HotelReservation.Domain.Models
         public int AdultCapacity { get; set; }
         public int ChildrenCapacity { get; set; }
         public double PricePerNight { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime ModificationDate { get; set; }
+        public DateTime CreationDate { get; private set; }
+        public DateTime ModificationDate { get; private set; }
         public int HotelId { get; set; }
         public Hotel Hotel { get; set; }
+
+        public Room()
+        {
+            CreationDate = DateTime.UtcNow;
+            ModificationDate = DateTime.UtcNow;
+        }
+
+        public void UpdateModificationDate()
+        {
+            ModificationDate = DateTime.UtcNow;
+        }
     }
 }

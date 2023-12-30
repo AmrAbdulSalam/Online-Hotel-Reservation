@@ -9,7 +9,18 @@ namespace HotelReservation.Domain.Models
         public string Country { get; set; }
         public string PostOffice { get; set; }
         public CurrencyEnum Currency { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime ModificationDate { get; set; }
+        public DateTime CreationDate { get; private set; }
+        public DateTime ModificationDate { get; private set; }
+
+        public City()
+        {
+            CreationDate = DateTime.UtcNow;
+            ModificationDate = DateTime.UtcNow;
+        }
+
+        public void UpdateModificationDate()
+        {
+            ModificationDate = DateTime.UtcNow;
+        }
     }
 }
