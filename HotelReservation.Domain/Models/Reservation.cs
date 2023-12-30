@@ -1,7 +1,7 @@
 ﻿
 namespace HotelReservation.Domain.Models
 {
-    internal class Reservation
+    public class Reservation
     {
         public int Id { get; set; }
         public int ReferenceceNo { get; set; }

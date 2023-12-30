@@ -1,7 +1,7 @@
 ﻿
 namespace HotelReservation.Domain.Models
 {
-    internal class FeaturedDeal
+    public class FeaturedDeal
     {
         public int Id { get; set; }
         public double Discount { get; set; }

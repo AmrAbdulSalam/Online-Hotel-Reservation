@@ -2,7 +2,7 @@
 
 namespace HotelReservation.Domain.Models
 {
-    internal class City
+    public class City
     {
         public int Id { get; set; }
         public string Name { get; set; }

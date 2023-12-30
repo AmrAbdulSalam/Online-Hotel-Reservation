@@ -2,7 +2,7 @@
 
 namespace HotelReservation.Domain.Models
 {
-    internal class Payment
+    public class Payment
     {
         public int Id { get; set; }
         public PaymentStatusEnum PaymentStatus { get; set; }
