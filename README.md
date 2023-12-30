@@ -25,3 +25,7 @@ The system includes an admin role that manages hotel-related information:
 Users can make reservations for hotel rooms, manage bookings, and handle payment transactions within the system. 
 The application manages reservation details, including check-in/check-out dates, room types, and prices. 
 Payment processing is facilitated for confirmed reservations.
+
+## **Hotel Reservation Database ERD**
+
+<img width="1119" alt="Screen Shot 2023-12-30 at 2 26 09 PM" src="https://github.com/AmrAbdulSalam/Online-Hotel-Reservation/assets/46429001/0117c973-5d40-4160-bc28-229ca145da2d">
