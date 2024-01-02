@@ -8,7 +8,7 @@ namespace HotelReservation.Domain.ServiceInterfaces
 
         Task<Payment> GetPaymentByIdAsync(int paymentId);
 
-        Task AddPaymentAsync(Payment payment);
+        Task<int> AddPaymentAsync(Payment payment);
 
         Task UpdatePaymentAsync(Payment payment);
 

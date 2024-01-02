@@ -16,7 +16,7 @@ namespace HotelReservation.Db.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddFeaturedDealAsync(FeaturedDeal featuredDeal)
+        public async Task<int> AddFeaturedDealAsync(FeaturedDeal featuredDeal)
         {
             if (featuredDeal == null)
             {
@@ -28,6 +28,8 @@ namespace HotelReservation.Db.Repositories
             await _dbContext.FeaturedDeals.AddAsync(mappedFeaturedDeal);
 
             _dbContext.SaveChanges();
+
+            return mappedFeaturedDeal.Id;
         }
 
         public async Task DeleteFeaturedDealAsync(int featuredDealId)

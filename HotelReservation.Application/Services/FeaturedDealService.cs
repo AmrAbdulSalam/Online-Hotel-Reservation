@@ -13,9 +13,9 @@ namespace HotelReservation.Application.Services
             _featuredDealRepository = featuredDealRepository;
         }
 
-        public async Task AddFeaturedDealAsync(FeaturedDeal featuredDeal)
+        public async Task<int> AddFeaturedDealAsync(FeaturedDeal featuredDeal)
         {
-            await _featuredDealRepository.AddFeaturedDealAsync(featuredDeal);
+            return await _featuredDealRepository.AddFeaturedDealAsync(featuredDeal);
         }
 
         public async Task DeleteFeaturedDealAsync(int featuredDealId)

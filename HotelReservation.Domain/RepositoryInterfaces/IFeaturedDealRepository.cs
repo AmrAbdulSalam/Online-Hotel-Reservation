@@ -8,7 +8,7 @@ namespace HotelReservation.Domain.RepositoryInterfaces
 
         Task<FeaturedDeal> GetFeaturedDealByIdAsync(int featuredDealId);
 
-        Task AddFeaturedDealAsync(FeaturedDeal featuredDeal);
+        Task<int> AddFeaturedDealAsync(FeaturedDeal featuredDeal);
 
         Task UpdateFeaturedDealAsync(FeaturedDeal featuredDeal);
 

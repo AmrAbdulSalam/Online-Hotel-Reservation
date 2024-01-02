@@ -16,7 +16,7 @@ namespace HotelReservation.Db.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddCityAsync(City city)
+        public async Task<int> AddCityAsync(City city)
         {
             if (city == null)
             {
@@ -28,6 +28,8 @@ namespace HotelReservation.Db.Repositories
             await _dbContext.Cities.AddAsync(mappedCity);
 
             _dbContext.SaveChanges();
+
+            return mappedCity.Id;
         }
         
         public async Task<bool> CityExists(int cityId)

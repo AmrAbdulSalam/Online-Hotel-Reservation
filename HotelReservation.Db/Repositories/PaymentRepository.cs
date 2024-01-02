@@ -16,7 +16,7 @@ namespace HotelReservation.Db.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddPaymentAsync(Payment payment)
+        public async Task<int> AddPaymentAsync(Payment payment)
         {
             if (payment == null)
             {
@@ -28,6 +28,8 @@ namespace HotelReservation.Db.Repositories
             await _dbContext.Payments.AddAsync(mappedPayment);
 
             _dbContext.SaveChanges();
+
+            return mappedPayment.Id;
         }
 
         public async Task DeletePaymentAsync(int paymentId)

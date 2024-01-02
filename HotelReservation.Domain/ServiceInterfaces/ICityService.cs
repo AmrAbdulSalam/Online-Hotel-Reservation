@@ -8,7 +8,7 @@ namespace HotelReservation.Domain.ServiceInterfaces
 
         Task<City> GetCityByIdAsync(int cityId);
 
-        Task AddCityAsync(City city);
+        Task<int> AddCityAsync(City city);
 
         Task UpdateCityAsync(City city);
 

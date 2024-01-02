@@ -13,9 +13,9 @@ namespace HotelReservation.Application.Services
             _cityRepository = cityRepository;
         }
 
-        public async Task AddCityAsync(City city)
+        public async Task<int> AddCityAsync(City city)
         {
-            await _cityRepository.AddCityAsync(city);
+            return await _cityRepository.AddCityAsync(city);
         }
 
         public async Task<bool> CityExists(int cityId)

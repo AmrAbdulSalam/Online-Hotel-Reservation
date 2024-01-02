@@ -13,9 +13,9 @@ namespace HotelReservation.Application.Services
             _reservationRepository = reservationRepository;
         }
 
-        public async Task AddReservationAsync(Reservation reservation)
+        public async Task<int> AddReservationAsync(Reservation reservation)
         {
-            await _reservationRepository.AddReservationAsync(reservation);
+            return await _reservationRepository.AddReservationAsync(reservation);
         }
 
         public async Task DeleteReservationAsync(int reservationId)

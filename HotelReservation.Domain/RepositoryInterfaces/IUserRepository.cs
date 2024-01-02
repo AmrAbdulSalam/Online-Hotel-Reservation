@@ -8,7 +8,7 @@ namespace HotelReservation.Domain.RepositoryInterfaces
 
         Task<User> GetUserByIdAsync(int userId);
 
-        Task AddUserAsync(User user);
+        Task<int> AddUserAsync(User user);
 
         Task UpdateUserAsync(User user);
 

@@ -8,7 +8,7 @@ namespace HotelReservation.Domain.RepositoryInterfaces
 
         Task<Room> GetRoomByIdAsync(int roomId);
 
-        Task AddRoomAsync(Room room);
+        Task<int> AddRoomAsync(Room room);
 
         Task UpdateRoomAsync(Room room);
 

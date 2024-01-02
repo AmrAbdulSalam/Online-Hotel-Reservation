@@ -16,7 +16,7 @@ namespace HotelReservation.Db.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddHotelAsync(Hotel hotel)
+        public async Task<int> AddHotelAsync(Hotel hotel)
         {
             if (hotel == null)
             {
@@ -28,6 +28,8 @@ namespace HotelReservation.Db.Repositories
             await _dbContext.Hotels.AddAsync(mappedHotel);
 
             _dbContext.SaveChanges();
+
+            return mappedHotel.Id;
         }
 
         public async Task DeleteHotelAsync(int hotelId)
