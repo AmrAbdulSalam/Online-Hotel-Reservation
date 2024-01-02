@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Db.Repositories
 {
-    internal class PaymentRepository : IPaymentRepository
+    public class PaymentRepository : IPaymentRepository
     {
         private readonly HotelReservationDbContext _dbContext;
         private readonly IMapper _mapper;

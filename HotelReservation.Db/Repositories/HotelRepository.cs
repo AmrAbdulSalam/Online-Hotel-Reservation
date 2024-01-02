@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Db.Repositories
 {
-    internal class HotelRepository : IHotelRepository
+    public class HotelRepository : IHotelRepository
     {
         private readonly HotelReservationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        internal HotelRepository(HotelReservationDbContext dbContext, IMapper mapper)
+        public HotelRepository(HotelReservationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
