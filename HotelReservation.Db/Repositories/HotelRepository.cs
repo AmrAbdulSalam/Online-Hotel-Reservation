@@ -52,7 +52,9 @@ namespace HotelReservation.Db.Repositories
 
         public async Task<Hotel> GetHotelByIdAsync(int hotelId)
         {
-            var hotel = await _dbContext.Hotels.FindAsync(hotelId);
+            var hotel = await _dbContext.Hotels
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == hotelId);
 
             return _mapper.Map<Hotel>(hotel);
         }

@@ -57,7 +57,9 @@ namespace HotelReservation.Db.Repositories
 
         public async Task<City> GetCityByIdAsync(int cityId)
         {
-            var city = await _dbContext.Cities.FindAsync(cityId);
+            var city = await _dbContext.Cities
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == cityId);
 
             return _mapper.Map<City>(city);
         }

@@ -52,7 +52,9 @@ namespace HotelReservation.Db.Repositories
 
         public async Task<Payment> GetPaymentByIdAsync(int paymentId)
         {
-            var payment = await _dbContext.Payments.FindAsync(paymentId);
+            var payment = await _dbContext.Payments
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == paymentId);
 
             return _mapper.Map<Payment>(payment);
         }

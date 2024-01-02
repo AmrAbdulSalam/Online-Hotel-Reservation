@@ -57,7 +57,9 @@ namespace HotelReservation.Db.Repositories
 
         public async Task<FeaturedDeal> GetFeaturedDealByIdAsync(int featuredDealId)
         {
-            var featuredDeal = await _dbContext.FeaturedDeals.FindAsync(featuredDealId);
+            var featuredDeal = await _dbContext.FeaturedDeals
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == featuredDealId);
 
             return _mapper.Map<FeaturedDeal>(featuredDeal);
         }
