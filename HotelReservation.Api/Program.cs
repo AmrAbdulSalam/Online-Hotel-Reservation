@@ -23,7 +23,7 @@ builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddHotelReservationDbContext(
     option => option.UseSqlServer(builder.Configuration.GetConnectionString("SQL-ConnectionString")));
 
-builder.Services.AddServices();
+builder.Services.AddServices(builder.Configuration);
 
 var app = builder.Build();
 
