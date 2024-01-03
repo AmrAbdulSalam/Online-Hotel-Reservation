@@ -26,13 +26,16 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Hotel>>> GetAllCitiesAsync()
+        [ProducesResponseType(typeof(List<Hotel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<Hotel>>> GetAllHotelsAsync()
         {
             return Ok(await _hotelService.GetAllHotelsAsync());
         }
 
         [HttpGet("{hotelId}", Name = "GetHotelById")]
-        public async Task<ActionResult<Hotel>> GetCityById(int hotelId)
+        [ProducesResponseType(typeof(Hotel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Hotel>> GetHotelById(int hotelId)
         {
             var hotelExists = await _hotelService.HotelExists(hotelId);
 
@@ -45,7 +48,9 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddCityAsync([FromForm] HotelDTO newHotel)
+        [ProducesResponseType(typeof(Hotel), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Hotel>> AddHotelAsync([FromForm] HotelDTO newHotel)
         {
             var validationResult = await _validator.ValidateAsync(newHotel);
 
@@ -96,11 +101,13 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpDelete("{hotelId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteHotelAsync(int hotelId)
         {
-            var cityExists = await _hotelService.HotelExists(hotelId);
+            var hotelExists = await _hotelService.HotelExists(hotelId);
 
-            if (!cityExists)
+            if (!hotelExists)
             {
                 return NotFound($"Hotel with ID {hotelId} not found");
             }
@@ -111,7 +118,10 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPut("{hotelId}")]
-        public async Task<ActionResult> UpdateCityAsync(int hotelId ,[FromForm] HotelDTO updatedHotel)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UpdateHotelAsync(int hotelId ,[FromForm] HotelDTO updatedHotel)
         {
             var hotelExists = await _hotelService.HotelExists(hotelId);
 
