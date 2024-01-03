@@ -4,7 +4,7 @@ namespace HotelReservation.Domain.ServiceInterfaces
 {
     public interface IHotelService
     {
-        Task<List<Hotel>> GetAllHotelsAsync();
+        Task<List<Hotel>> GetAllHotelsAsync(int pageNumber, int pageSize);
 
         Task<Hotel> GetHotelByIdAsync(int hotelId);
 

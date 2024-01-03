@@ -23,9 +23,9 @@ namespace HotelReservation.Application.Services
             await _hotelRepository.DeleteHotelAsync(hotelId);
         }
 
-        public async Task<List<Hotel>> GetAllHotelsAsync()
+        public async Task<List<Hotel>> GetAllHotelsAsync(int pageNumber, int pageSize)
         {
-            return await _hotelRepository.GetAllHotelsAsync();
+            return await _hotelRepository.GetAllHotelsAsync(pageNumber, pageSize);
         }
 
         public async Task<Hotel> GetHotelByIdAsync(int hotelId)
