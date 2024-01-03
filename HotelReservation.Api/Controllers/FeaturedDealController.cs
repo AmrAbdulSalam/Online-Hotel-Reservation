@@ -23,12 +23,15 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<FeaturedDealController>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<FeaturedDealController>>> GetAllFeaturedDealsAsync()
         {
             return Ok(await _featuredDealService.GetAllFeaturedDealsAsync());
         }
 
         [HttpGet("{featuredDealId}" , Name = "GetFeaturedDealById")]
+        [ProducesResponseType(typeof(FeaturedDeal), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<FeaturedDeal>> GetFeaturedDealByIdAsync(int featuredDealId)
         {
             var featuredDealExists = await _featuredDealService.FeaturedDealExists(featuredDealId);
@@ -42,6 +45,8 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(FeaturedDeal), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<FeaturedDeal>> AddFeaturedDealAsync(FeaturedDealDTO newFeaturedDeal)
         {
             var validationResult = await _validator.ValidateAsync(newFeaturedDeal);
@@ -72,6 +77,8 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpDelete("{featuredDealId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteFeaturedDealAsync(int featuredDealId)
         {
             var featuredDealExists = await _featuredDealService.FeaturedDealExists(featuredDealId);
@@ -87,6 +94,9 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPut("{featuredDealId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> UpdateFeaturedDealAsync(int featuredDealId , FeaturedDealDTO updatedFeaturedDeal)
         {
             var featuredDealExists = await _featuredDealService.FeaturedDealExists(featuredDealId);
