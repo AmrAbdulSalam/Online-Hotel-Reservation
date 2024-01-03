@@ -8,7 +8,8 @@ namespace HotelReservation.Api.Profiles
     {
         public CityProfile()
         {
-            CreateMap<CityDTO , City>();
+            CreateMap<CityDTO , City>()
+                .ForMember(x => x.CreationDate, opt=> opt.Ignore());
         }
     }
 }
