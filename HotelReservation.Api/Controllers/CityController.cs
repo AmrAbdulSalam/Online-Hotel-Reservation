@@ -23,12 +23,15 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<City>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<City>>> GetAllCitiesAsync()
         {
             return Ok(await _cityService.GetAllCitiesAsync());
         }
 
         [HttpGet("{cityId}" , Name ="GetCityById")]
+        [ProducesResponseType(typeof(City), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<City>> GetCityById(int cityId)
         {
             var cityExists = await _cityService.CityExists(cityId);
@@ -38,10 +41,12 @@ namespace HotelReservation.Api.Controllers
                 return NotFound($"City with ID {cityId} not found");
             }
 
-            return await _cityService.GetCityByIdAsync(cityId);
+            return Ok(await _cityService.GetCityByIdAsync(cityId));
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(City), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<City>> AddCityAsync(CityDTO newCity)
         {
             var validationResult = await _validator.ValidateAsync(newCity);
@@ -70,6 +75,8 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpDelete("{cityId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteCityAsync(int cityId)
         {
             var cityExists = await _cityService.CityExists(cityId);
@@ -85,6 +92,9 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPut("{cityId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> UpdateCityAsync(int cityId , CityDTO updatedCity)
         {
             var cityExists = await _cityService.CityExists(cityId);
@@ -107,9 +117,9 @@ namespace HotelReservation.Api.Controllers
                 return BadRequest(new { Errors = errors });
             }
 
-            var city = _mapper.Map<City>(updatedCity);
+            var city = await _cityService.GetCityByIdAsync(cityId);
 
-            city.Id = cityId;
+            _mapper.Map(updatedCity, city);
 
             city.UpdateModificationDate();
 
