@@ -4,7 +4,7 @@ namespace HotelReservation.Domain.ServiceInterfaces
 {
     public interface ICityService
     {
-        Task<List<City>> GetAllCitiesAsync();
+        Task<List<City>> GetAllCitiesAsync(int pageNumber, int pageSize);
 
         Task<City> GetCityByIdAsync(int cityId);
 
