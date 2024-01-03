@@ -48,9 +48,12 @@ namespace HotelReservation.Db.Repositories
             return await _dbContext.FeaturedDeals.AnyAsync(x => x.Id == featuredDealId);
         }
 
-        public async Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync()
+        public async Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync(int pageNumber, int pageSize)
         {
-            var featuredDeals = await _dbContext.FeaturedDeals.ToListAsync();
+            var featuredDeals = await _dbContext.FeaturedDeals
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return _mapper.Map<List<FeaturedDeal>>(featuredDeals);
         }

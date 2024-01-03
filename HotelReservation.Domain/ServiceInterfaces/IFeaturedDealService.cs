@@ -4,7 +4,7 @@ namespace HotelReservation.Domain.ServiceInterfaces
 {
     public interface IFeaturedDealService
     {
-        Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync();
+        Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync(int pageNumber, int pageSize);
 
         Task<FeaturedDeal> GetFeaturedDealByIdAsync(int featuredDealId);
 

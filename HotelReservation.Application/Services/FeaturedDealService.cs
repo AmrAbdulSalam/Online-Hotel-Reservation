@@ -28,9 +28,9 @@ namespace HotelReservation.Application.Services
             return await _featuredDealRepository.FeaturedDealExists(featuredDealId);
         }
 
-        public async Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync()
+        public async Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync(int pageNumber, int pageSize)
         {
-            return await _featuredDealRepository.GetAllFeaturedDealsAsync();
+            return await _featuredDealRepository.GetAllFeaturedDealsAsync(pageNumber, pageSize);
         }
 
         public async Task<FeaturedDeal> GetFeaturedDealByIdAsync(int featuredDealId)

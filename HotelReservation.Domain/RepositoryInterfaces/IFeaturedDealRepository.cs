@@ -4,7 +4,7 @@ namespace HotelReservation.Domain.RepositoryInterfaces
 {
     public interface IFeaturedDealRepository
     {
-        Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync();
+        Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync(int pageNumber, int pageSize);
 
         Task<FeaturedDeal> GetFeaturedDealByIdAsync(int featuredDealId);
 
