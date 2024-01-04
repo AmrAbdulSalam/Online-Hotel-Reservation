@@ -59,6 +59,23 @@ namespace HotelReservation.Db.Repositories
             return _mapper.Map<Reservation>(reservation);
         }
 
+        public async Task<bool> IsReservationAvailableAsync(int roomId, DateTime startDate, DateTime endDate)
+        {
+            var reservations = await _dbContext.Reservations.ToListAsync();
+
+            foreach (var reservation in reservations)
+            {
+                bool sameRoom = reservation.RoomId == roomId;
+                bool overlap = !(endDate <= reservation.CheckIn || startDate >= reservation.CheckOut);
+
+                if (sameRoom && overlap)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public async Task<bool> ReservationExists(int reservationId)
         {
             return await _dbContext.Reservations.AnyAsync(x => x.Id == reservationId);

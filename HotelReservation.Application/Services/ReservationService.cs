@@ -33,6 +33,11 @@ namespace HotelReservation.Application.Services
             return await _reservationRepository.GetReservationByIdAsync(reservationId);
         }
 
+        public async Task<bool> IsReservationAvailableAsync(int roomId, DateTime startDate, DateTime endDate)
+        {
+            return await _reservationRepository.IsReservationAvailableAsync(roomId, startDate, endDate);
+        }
+
         public async Task<bool> ReservationExists(int reservationId)
         {
             return await _reservationRepository.ReservationExists(reservationId);
