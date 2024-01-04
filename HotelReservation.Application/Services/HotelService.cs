@@ -13,9 +13,9 @@ namespace HotelReservation.Application.Services
             _hotelRepository = hotelRepository;
         }
 
-        public async Task AddHotelAsync(Hotel hotel)
+        public async Task<int> AddHotelAsync(Hotel hotel)
         {
-            await _hotelRepository.AddHotelAsync(hotel);
+            return await _hotelRepository.AddHotelAsync(hotel);
         }
 
         public async Task DeleteHotelAsync(int hotelId)
@@ -23,9 +23,9 @@ namespace HotelReservation.Application.Services
             await _hotelRepository.DeleteHotelAsync(hotelId);
         }
 
-        public async Task<List<Hotel>> GetAllHotelsAsync()
+        public async Task<List<Hotel>> GetAllHotelsAsync(int pageNumber, int pageSize)
         {
-            return await _hotelRepository.GetAllHotelsAsync();
+            return await _hotelRepository.GetAllHotelsAsync(pageNumber, pageSize);
         }
 
         public async Task<Hotel> GetHotelByIdAsync(int hotelId)

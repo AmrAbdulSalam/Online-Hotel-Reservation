@@ -13,9 +13,9 @@ namespace HotelReservation.Application.Services
             _reservationRepository = reservationRepository;
         }
 
-        public async Task AddReservationAsync(Reservation reservation)
+        public async Task<int> AddReservationAsync(Reservation reservation)
         {
-            await _reservationRepository.AddReservationAsync(reservation);
+            return await _reservationRepository.AddReservationAsync(reservation);
         }
 
         public async Task DeleteReservationAsync(int reservationId)
@@ -23,14 +23,19 @@ namespace HotelReservation.Application.Services
             await _reservationRepository.DeleteReservationAsync(reservationId);
         }
 
-        public async Task<List<Reservation>> GetAllReservationsAsync()
+        public async Task<List<Reservation>> GetAllReservationsAsync(int pageNumber, int pageSize)
         {
-            return await _reservationRepository.GetAllReservationsAsync();
+            return await _reservationRepository.GetAllReservationsAsync(pageNumber,pageSize);
         }
 
         public async Task<Reservation> GetReservationByIdAsync(int reservationId)
         {
             return await _reservationRepository.GetReservationByIdAsync(reservationId);
+        }
+
+        public async Task<bool> IsReservationAvailableAsync(int roomId, DateTime startDate, DateTime endDate)
+        {
+            return await _reservationRepository.IsReservationAvailableAsync(roomId, startDate, endDate);
         }
 
         public async Task<bool> ReservationExists(int reservationId)

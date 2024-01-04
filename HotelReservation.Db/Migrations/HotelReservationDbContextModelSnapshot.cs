@@ -181,8 +181,9 @@ namespace HotelReservation.Db.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("ReferenceceNo")
-                        .HasColumnType("int");
+                    b.Property<string>("ReferenceceNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("int");

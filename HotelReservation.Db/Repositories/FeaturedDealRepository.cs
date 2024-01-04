@@ -5,18 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Db.Repositories
 {
-    internal class FeaturedDealRepository : IFeaturedDealRepository
+    public class FeaturedDealRepository : IFeaturedDealRepository
     {
         private readonly HotelReservationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        internal FeaturedDealRepository(HotelReservationDbContext dbContext, IMapper mapper)
+        public FeaturedDealRepository(HotelReservationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
         }
 
-        public async Task AddFeaturedDealAsync(FeaturedDeal featuredDeal)
+        public async Task<int> AddFeaturedDealAsync(FeaturedDeal featuredDeal)
         {
             if (featuredDeal == null)
             {
@@ -28,6 +28,8 @@ namespace HotelReservation.Db.Repositories
             await _dbContext.FeaturedDeals.AddAsync(mappedFeaturedDeal);
 
             _dbContext.SaveChanges();
+
+            return mappedFeaturedDeal.Id;
         }
 
         public async Task DeleteFeaturedDealAsync(int featuredDealId)
@@ -46,16 +48,21 @@ namespace HotelReservation.Db.Repositories
             return await _dbContext.FeaturedDeals.AnyAsync(x => x.Id == featuredDealId);
         }
 
-        public async Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync()
+        public async Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync(int pageNumber, int pageSize)
         {
-            var featuredDeals = await _dbContext.FeaturedDeals.ToListAsync();
+            var featuredDeals = await _dbContext.FeaturedDeals
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return _mapper.Map<List<FeaturedDeal>>(featuredDeals);
         }
 
         public async Task<FeaturedDeal> GetFeaturedDealByIdAsync(int featuredDealId)
         {
-            var featuredDeal = await _dbContext.FeaturedDeals.FindAsync(featuredDealId);
+            var featuredDeal = await _dbContext.FeaturedDeals
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == featuredDealId);
 
             return _mapper.Map<FeaturedDeal>(featuredDeal);
         }

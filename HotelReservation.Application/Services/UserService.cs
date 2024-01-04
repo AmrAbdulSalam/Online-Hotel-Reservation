@@ -13,9 +13,9 @@ namespace HotelReservation.Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task<int> AddUserAsync(User user)
         {
-            await _userRepository.AddUserAsync(user);
+            return await _userRepository.AddUserAsync(user);
         }
 
         public async Task DeleteUserAsync(int userId)
@@ -23,9 +23,9 @@ namespace HotelReservation.Application.Services
             await _userRepository.DeleteUserAsync(userId);
         }
 
-        public async Task<List<User>> GetAllUsersAsync()
+        public async Task<List<User>> GetAllUsersAsync(int pageNumber, int pageSize)
         {
-            return await _userRepository.GetAllUsersAsync();
+            return await _userRepository.GetAllUsersAsync(pageNumber, pageSize);
         }
 
         public async Task<User> GetUserByIdAsync(int userId)

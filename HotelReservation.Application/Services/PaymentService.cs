@@ -13,9 +13,9 @@ namespace HotelReservation.Application.Services
             _paymentRepository = paymentRepository;
         }
 
-        public async Task AddPaymentAsync(Payment payment)
+        public async Task<int> AddPaymentAsync(Payment payment)
         {
-            await _paymentRepository.AddPaymentAsync(payment);
+            return await _paymentRepository.AddPaymentAsync(payment);
         }
 
         public async Task DeletePaymentAsync(int paymentId)
@@ -23,9 +23,9 @@ namespace HotelReservation.Application.Services
             await _paymentRepository.DeletePaymentAsync(paymentId);
         }
 
-        public async Task<List<Payment>> GetAllPaymentsAsync()
+        public async Task<List<Payment>> GetAllPaymentsAsync(int pageNumber, int pageSize)
         {
-            return await _paymentRepository.GetAllPaymentsAsync();
+            return await _paymentRepository.GetAllPaymentsAsync(pageNumber, pageSize);
         }
 
         public async Task<Payment> GetPaymentByIdAsync(int paymentId)

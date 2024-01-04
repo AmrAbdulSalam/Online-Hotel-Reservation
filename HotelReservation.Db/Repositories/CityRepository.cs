@@ -5,18 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Db.Repositories
 {
-    internal class CityRepository : ICityRepository
+    public class CityRepository : ICityRepository
     {
         private readonly HotelReservationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        internal CityRepository(HotelReservationDbContext dbContext , IMapper mapper)
+        public CityRepository(HotelReservationDbContext dbContext , IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
         }
 
-        public async Task AddCityAsync(City city)
+        public async Task<int> AddCityAsync(City city)
         {
             if (city == null)
             {
@@ -28,6 +28,8 @@ namespace HotelReservation.Db.Repositories
             await _dbContext.Cities.AddAsync(mappedCity);
 
             _dbContext.SaveChanges();
+
+            return mappedCity.Id;
         }
         
         public async Task<bool> CityExists(int cityId)
@@ -46,16 +48,21 @@ namespace HotelReservation.Db.Repositories
             _dbContext.SaveChanges();
         }
 
-        public async Task<List<City>> GetAllCitiesAsync()
+        public async Task<List<City>> GetAllCitiesAsync(int pageNumber, int pageSize)
         {
-            var cities = await _dbContext.Cities.ToListAsync();
+            var cities = await _dbContext.Cities
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return _mapper.Map<List<City>>(cities);
         }
 
         public async Task<City> GetCityByIdAsync(int cityId)
         {
-            var city = await _dbContext.Cities.FindAsync(cityId);
+            var city = await _dbContext.Cities
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == cityId);
 
             return _mapper.Map<City>(city);
         }

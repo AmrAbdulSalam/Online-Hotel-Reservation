@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Db.Repositories
 {
-    internal class UserRepository : IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly HotelReservationDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -16,7 +16,7 @@ namespace HotelReservation.Db.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task<int> AddUserAsync(User user)
         {
             if (user == null)
             {
@@ -28,6 +28,8 @@ namespace HotelReservation.Db.Repositories
             await _dbContext.Users.AddAsync(mappedUser);
 
             _dbContext.SaveChanges();
+
+            return mappedUser.Id;
         }
 
         public async Task DeleteUserAsync(int userId)
@@ -41,16 +43,21 @@ namespace HotelReservation.Db.Repositories
             _dbContext.SaveChanges();
         }
 
-        public async Task<List<User>> GetAllUsersAsync()
+        public async Task<List<User>> GetAllUsersAsync(int pageNumber, int pageSize)
         {
-            var users = await _dbContext.Users.ToListAsync();
+            var users = await _dbContext.Users
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return _mapper.Map<List<User>>(users);
         }
 
         public async Task<User> GetUserByIdAsync(int userId)
         {
-            var user = await _dbContext.Users.FindAsync(userId);
+            var user = await _dbContext.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == userId);
 
             return _mapper.Map<User>(user);
         }

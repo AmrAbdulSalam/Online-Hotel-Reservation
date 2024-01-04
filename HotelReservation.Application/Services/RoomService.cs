@@ -13,9 +13,9 @@ namespace HotelReservation.Application.Services
             _roomRepository = roomRepository;
         }
 
-        public async Task AddRoomAsync(Room room)
+        public async Task<int> AddRoomAsync(Room room)
         {
-            await _roomRepository.AddRoomAsync(room);
+            return await _roomRepository.AddRoomAsync(room);
         }
 
         public async Task DeleteRoomAsync(int roomId)
@@ -23,9 +23,9 @@ namespace HotelReservation.Application.Services
             await _roomRepository.DeleteRoomAsync(roomId);
         }
 
-        public async Task<List<Room>> GetAllRoomsAsync()
+        public async Task<List<Room>> GetAllRoomsAsync(int pageNumber, int pageSize)
         {
-            return await _roomRepository.GetAllRoomsAsync();
+            return await _roomRepository.GetAllRoomsAsync(pageNumber, pageSize);
         }
 
         public async Task<Room> GetRoomByIdAsync(int roomId)

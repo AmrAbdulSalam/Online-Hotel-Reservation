@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Db.Repositories
 {
-    internal class ReservationRepository : IReservationRepository
+    public class ReservationRepository : IReservationRepository
     {
         private readonly HotelReservationDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -16,7 +16,7 @@ namespace HotelReservation.Db.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddReservationAsync(Reservation reservation)
+        public async Task<int> AddReservationAsync(Reservation reservation)
         {
             if (reservation == null)
             {
@@ -28,6 +28,8 @@ namespace HotelReservation.Db.Repositories
             await _dbContext.Reservations.AddAsync(mappedReservation);
 
             _dbContext.SaveChanges();
+
+            return mappedReservation.Id;
         }
 
         public async Task DeleteReservationAsync(int reservationId)
@@ -41,18 +43,40 @@ namespace HotelReservation.Db.Repositories
             _dbContext.SaveChanges();
         }
 
-        public async Task<List<Reservation>> GetAllReservationsAsync()
+        public async Task<List<Reservation>> GetAllReservationsAsync(int pageNumber, int pageSize)
         {
-            var reservations = _dbContext.Reservations.ToListAsync();
+            var reservations = await _dbContext.Reservations
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return _mapper.Map<List<Reservation>>(reservations);
         }
 
         public async Task<Reservation> GetReservationByIdAsync(int reservationId)
         {
-            var reservation = await _dbContext.Reservations.FindAsync(reservationId);
+            var reservation = await _dbContext.Reservations
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == reservationId);
 
             return _mapper.Map<Reservation>(reservation);
+        }
+
+        public async Task<bool> IsReservationAvailableAsync(int roomId, DateTime startDate, DateTime endDate)
+        {
+            var reservations = await _dbContext.Reservations.ToListAsync();
+
+            foreach (var reservation in reservations)
+            {
+                bool sameRoom = reservation.RoomId == roomId;
+                bool overlap = !(endDate <= reservation.CheckIn || startDate >= reservation.CheckOut);
+
+                if (sameRoom && overlap)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public async Task<bool> ReservationExists(int reservationId)

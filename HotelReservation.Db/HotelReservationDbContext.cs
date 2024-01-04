@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Db
 {
-    internal class HotelReservationDbContext : DbContext
+    public class HotelReservationDbContext : DbContext
     {
         internal DbSet<City> Cities { get; set; }
         internal DbSet<FeaturedDeal> FeaturedDeals { get; set; }
@@ -13,7 +13,7 @@ namespace HotelReservation.Db
         internal DbSet<Reservation> Reservations { get; set; }
         internal DbSet<Payment> Payments { get; set; }
 
-        internal HotelReservationDbContext(DbContextOptions<HotelReservationDbContext> options) : base(options)
+        public HotelReservationDbContext(DbContextOptions<HotelReservationDbContext> options) : base(options)
         {
             
         }

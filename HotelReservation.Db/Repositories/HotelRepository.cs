@@ -5,18 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Db.Repositories
 {
-    internal class HotelRepository : IHotelRepository
+    public class HotelRepository : IHotelRepository
     {
         private readonly HotelReservationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        internal HotelRepository(HotelReservationDbContext dbContext, IMapper mapper)
+        public HotelRepository(HotelReservationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
         }
 
-        public async Task AddHotelAsync(Hotel hotel)
+        public async Task<int> AddHotelAsync(Hotel hotel)
         {
             if (hotel == null)
             {
@@ -28,6 +28,8 @@ namespace HotelReservation.Db.Repositories
             await _dbContext.Hotels.AddAsync(mappedHotel);
 
             _dbContext.SaveChanges();
+
+            return mappedHotel.Id;
         }
 
         public async Task DeleteHotelAsync(int hotelId)
@@ -41,16 +43,21 @@ namespace HotelReservation.Db.Repositories
             _dbContext.SaveChanges();
         }
 
-        public async Task<List<Hotel>> GetAllHotelsAsync()
+        public async Task<List<Hotel>> GetAllHotelsAsync(int pageNumber, int pageSize)
         {
-            var hotels = await _dbContext.Hotels.ToListAsync();
+            var hotels = await _dbContext.Hotels
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return _mapper.Map<List<Hotel>>(hotels);
         }
 
         public async Task<Hotel> GetHotelByIdAsync(int hotelId)
         {
-            var hotel = await _dbContext.Hotels.FindAsync(hotelId);
+            var hotel = await _dbContext.Hotels
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == hotelId);
 
             return _mapper.Map<Hotel>(hotel);
         }

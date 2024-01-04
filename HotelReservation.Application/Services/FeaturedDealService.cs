@@ -13,9 +13,9 @@ namespace HotelReservation.Application.Services
             _featuredDealRepository = featuredDealRepository;
         }
 
-        public async Task AddFeaturedDealAsync(FeaturedDeal featuredDeal)
+        public async Task<int> AddFeaturedDealAsync(FeaturedDeal featuredDeal)
         {
-            await _featuredDealRepository.AddFeaturedDealAsync(featuredDeal);
+            return await _featuredDealRepository.AddFeaturedDealAsync(featuredDeal);
         }
 
         public async Task DeleteFeaturedDealAsync(int featuredDealId)
@@ -28,9 +28,9 @@ namespace HotelReservation.Application.Services
             return await _featuredDealRepository.FeaturedDealExists(featuredDealId);
         }
 
-        public async Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync()
+        public async Task<List<FeaturedDeal>> GetAllFeaturedDealsAsync(int pageNumber, int pageSize)
         {
-            return await _featuredDealRepository.GetAllFeaturedDealsAsync();
+            return await _featuredDealRepository.GetAllFeaturedDealsAsync(pageNumber, pageSize);
         }
 
         public async Task<FeaturedDeal> GetFeaturedDealByIdAsync(int featuredDealId)

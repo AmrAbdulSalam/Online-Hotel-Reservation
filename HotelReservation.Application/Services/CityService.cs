@@ -13,9 +13,9 @@ namespace HotelReservation.Application.Services
             _cityRepository = cityRepository;
         }
 
-        public async Task AddCityAsync(City city)
+        public async Task<int> AddCityAsync(City city)
         {
-            await _cityRepository.AddCityAsync(city);
+            return await _cityRepository.AddCityAsync(city);
         }
 
         public async Task<bool> CityExists(int cityId)
@@ -28,9 +28,9 @@ namespace HotelReservation.Application.Services
             await _cityRepository.DeleteCityAsync(cityId);
         }
 
-        public async Task<List<City>> GetAllCitiesAsync()
+        public async Task<List<City>> GetAllCitiesAsync(int pageNumber, int pageSize)
         {
-            return await _cityRepository.GetAllCitiesAsync();
+            return await _cityRepository.GetAllCitiesAsync(pageNumber, pageSize);
         }
 
         public async Task<City> GetCityByIdAsync(int cityId)

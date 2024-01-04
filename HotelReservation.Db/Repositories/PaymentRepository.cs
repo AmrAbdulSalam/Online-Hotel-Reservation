@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Db.Repositories
 {
-    internal class PaymentRepository : IPaymentRepository
+    public class PaymentRepository : IPaymentRepository
     {
         private readonly HotelReservationDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -16,7 +16,7 @@ namespace HotelReservation.Db.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddPaymentAsync(Payment payment)
+        public async Task<int> AddPaymentAsync(Payment payment)
         {
             if (payment == null)
             {
@@ -28,6 +28,8 @@ namespace HotelReservation.Db.Repositories
             await _dbContext.Payments.AddAsync(mappedPayment);
 
             _dbContext.SaveChanges();
+
+            return mappedPayment.Id;
         }
 
         public async Task DeletePaymentAsync(int paymentId)
@@ -41,16 +43,21 @@ namespace HotelReservation.Db.Repositories
             _dbContext.SaveChanges();
         }
 
-        public async Task<List<Payment>> GetAllPaymentsAsync()
+        public async Task<List<Payment>> GetAllPaymentsAsync(int pageNumber, int pageSize)
         {
-            var payments = await _dbContext.Payments.ToListAsync();
+            var payments = await _dbContext.Payments
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return _mapper.Map<List<Payment>>(payments);
         }
 
         public async Task<Payment> GetPaymentByIdAsync(int paymentId)
         {
-            var payment = await _dbContext.Payments.FindAsync(paymentId);
+            var payment = await _dbContext.Payments
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == paymentId);
 
             return _mapper.Map<Payment>(payment);
         }

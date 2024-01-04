@@ -4,11 +4,11 @@ namespace HotelReservation.Domain.ServiceInterfaces
 {
     public interface IUserService
     {
-        Task<List<User>> GetAllUsersAsync();
+        Task<List<User>> GetAllUsersAsync(int pageNumber, int pageSize);
 
         Task<User> GetUserByIdAsync(int userId);
 
-        Task AddUserAsync(User user);
+        Task<int> AddUserAsync(User user);
 
         Task UpdateUserAsync(User user);
 
