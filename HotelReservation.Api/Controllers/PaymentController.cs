@@ -23,12 +23,15 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<Payment>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<Payment>>> GetAllPaymentsAsync()
         {
             return Ok(await _paymentService.GetAllPaymentsAsync());
         }
 
         [HttpGet("{paymentId}" , Name = "GetPaymentById")]
+        [ProducesResponseType(typeof(Payment), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Payment>> GetPaymentByIdAsync(int paymentId)
         {
             var paymentExists = await _paymentService.PaymentExists(paymentId);
@@ -42,6 +45,8 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(Payment), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Payment>> fdfd(PaymentDTO newPayment)
         {
             var validationResult = await _validator.ValidateAsync(newPayment);
@@ -72,6 +77,8 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpDelete("{paymentId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeletePaymentAsync(int paymentId)
         {
             var paymentExists = await _paymentService.PaymentExists(paymentId);
@@ -87,6 +94,9 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPut("{paymentId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> UpdatePaymentAsync(int paymentId , PaymentDTO updatedPayment)
         {
             var paymentExists = await _paymentService.PaymentExists(paymentId);
