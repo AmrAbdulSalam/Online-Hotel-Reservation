@@ -26,12 +26,15 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<Room>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<Room>>> GetAllRoomsAsync()
         {
             return Ok(await _roomService.GetAllRoomsAsync());
         }
 
         [HttpGet("{roomId}" , Name = "GetRoomById")]
+        [ProducesResponseType(typeof(Room), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Room>> GetRoomByIdAsync(int roomId)
         {
             var roomExists = await _roomService.RoomExists(roomId);
@@ -45,6 +48,8 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(Room), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Room>> AddRoomAsync([FromForm] RoomDTO newRoom)
         {
             var validationResult = await _validator.ValidateAsync(newRoom);
@@ -96,6 +101,8 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpDelete("{roomId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteRoomAsync(int roomId)
         {
             var roomExists = await _roomService.RoomExists(roomId);
@@ -111,6 +118,9 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPut("{roomId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> UpdateRoomAsync(int roomId, [FromForm] RoomDTO updatedRoom)
         {
             var roomExists = await _roomService.RoomExists(roomId);
