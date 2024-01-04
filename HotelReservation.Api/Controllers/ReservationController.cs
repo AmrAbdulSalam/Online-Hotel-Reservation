@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using HotelReservation.Api.Models;
-using HotelReservation.Application.Services;
 using HotelReservation.Domain.Models;
 using HotelReservation.Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -27,12 +26,15 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<Reservation>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<Reservation>>> GetAllReservationsAsync()
         {
             return Ok(await _reservationService.GetAllReservationsAsync());
         }
 
         [HttpGet("{reservationId}" , Name = "GetReservationById")]
+        [ProducesResponseType(typeof(Reservation), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Reservation>> GetReservationByIdAsync(int reservationId)
         {
             var reservationExists = await _reservationService.ReservationExists(reservationId);
@@ -46,6 +48,8 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(Reservation), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Reservation>> AddReservationAsync(ReservationDTO newReservation)
         {
             var validationResult = await _validator.ValidateAsync(newReservation);
@@ -92,6 +96,8 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpDelete("{reservationId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteReservationAsync(int reservationId)
         {
             var reservationExists = await _reservationService.ReservationExists(reservationId);
@@ -107,6 +113,9 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPut("{reservationId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> UpdateReservationAsync(int reservationId, ReservationDTO updatedReservation)
         {
             var reservationExists = await _reservationService.ReservationExists(reservationId);
