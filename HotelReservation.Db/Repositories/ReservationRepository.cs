@@ -43,9 +43,12 @@ namespace HotelReservation.Db.Repositories
             _dbContext.SaveChanges();
         }
 
-        public async Task<List<Reservation>> GetAllReservationsAsync()
+        public async Task<List<Reservation>> GetAllReservationsAsync(int pageNumber, int pageSize)
         {
-            var reservations = await _dbContext.Reservations.ToListAsync();
+            var reservations = await _dbContext.Reservations
+                .Skip(pageNumber * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return _mapper.Map<List<Reservation>>(reservations);
         }
