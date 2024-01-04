@@ -45,7 +45,7 @@ namespace HotelReservation.Db.Repositories
 
         public async Task<List<Reservation>> GetAllReservationsAsync()
         {
-            var reservations = _dbContext.Reservations.ToListAsync();
+            var reservations = await _dbContext.Reservations.ToListAsync();
 
             return _mapper.Map<List<Reservation>>(reservations);
         }
