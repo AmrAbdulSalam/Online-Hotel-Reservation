@@ -27,9 +27,21 @@ namespace HotelReservation.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<Room>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<Room>>> GetAllRoomsAsync()
+        public async Task<ActionResult<List<Room>>> GetAllRoomsAsync(int pageNumber = 0, int pageSize = 5)
         {
-            return Ok(await _roomService.GetAllRoomsAsync());
+            const int maxPageSize = 10;
+
+            if (pageNumber < 0)
+            {
+                return BadRequest("Page number should be 0 or greater.");
+            }
+
+            if (pageSize <= 0 || pageSize > maxPageSize)
+            {
+                return BadRequest($"Page size should be between 1 and {maxPageSize}.");
+            }
+
+            return Ok(await _roomService.GetAllRoomsAsync(pageNumber, pageSize));
         }
 
         [HttpGet("{roomId}" , Name = "GetRoomById")]
