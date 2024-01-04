@@ -4,7 +4,7 @@ namespace HotelReservation.Domain.ServiceInterfaces
 {
     public interface IPaymentService
     {
-        Task<List<Payment>> GetAllPaymentsAsync();
+        Task<List<Payment>> GetAllPaymentsAsync(int pageNumber, int pageSize);
 
         Task<Payment> GetPaymentByIdAsync(int paymentId);
 

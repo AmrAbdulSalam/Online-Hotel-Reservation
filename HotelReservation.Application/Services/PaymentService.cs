@@ -23,9 +23,9 @@ namespace HotelReservation.Application.Services
             await _paymentRepository.DeletePaymentAsync(paymentId);
         }
 
-        public async Task<List<Payment>> GetAllPaymentsAsync()
+        public async Task<List<Payment>> GetAllPaymentsAsync(int pageNumber, int pageSize)
         {
-            return await _paymentRepository.GetAllPaymentsAsync();
+            return await _paymentRepository.GetAllPaymentsAsync(pageNumber, pageSize);
         }
 
         public async Task<Payment> GetPaymentByIdAsync(int paymentId)
