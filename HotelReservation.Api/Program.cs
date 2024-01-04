@@ -2,7 +2,6 @@ using HotelReservation.Db;
 using HotelReservation.Application;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
-using FluentValidation.AspNetCore;
 using FluentValidation;
 using System.Reflection;
 
@@ -23,7 +22,7 @@ builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddHotelReservationDbContext(
     option => option.UseSqlServer(builder.Configuration.GetConnectionString("SQL-ConnectionString")));
 
-builder.Services.AddServices(builder.Configuration);
+builder.Services.AddServices();
 
 var app = builder.Build();
 
