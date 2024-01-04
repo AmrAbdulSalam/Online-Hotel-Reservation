@@ -4,7 +4,7 @@ namespace HotelReservation.Db.Models
     internal class Reservation
     {
         public int Id { get; set; }
-        public int ReferenceceNo { get; set; }
+        public string ReferenceceNo { get; set; }
         public bool IsFeaturedDeal { get; set; }
         public double Price { get; set; }
         public DateTime CheckIn { get; set; }
