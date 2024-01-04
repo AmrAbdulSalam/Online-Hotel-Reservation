@@ -26,12 +26,15 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<User>>> GetAllUsersAsync()
         {
             return Ok(await _userService.GetAllUsersAsync());
         }
 
         [HttpGet("{userId}" , Name = "GetUserById")]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<User>> GetUserByIdAsync(int userId)
         {
             var userExists = await _userService.UserExists(userId);
@@ -45,7 +48,9 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> GetUserByIdAsync(UserDTO newUser)
+        [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<User>> AddUserAsync(UserDTO newUser)
         {
             var validationResult = await _validator.ValidateAsync(newUser);
 
@@ -77,6 +82,8 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpDelete("{userId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteUserAsync(int userId)
         {
             var userExists = await _userService.UserExists(userId);
@@ -92,6 +99,9 @@ namespace HotelReservation.Api.Controllers
         }
 
         [HttpPut("{userId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> UpdateUserAsync(int userId , UserDTO updatedUser)
         {
             var userExists = await _userService.UserExists(userId);
