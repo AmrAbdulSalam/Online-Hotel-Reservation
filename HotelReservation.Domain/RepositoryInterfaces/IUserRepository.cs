@@ -15,5 +15,7 @@ namespace HotelReservation.Domain.RepositoryInterfaces
         Task DeleteUserAsync(int userId);
 
         Task<bool> UserExists(int userId);
+
+        List<Hotel> RecentlyVisitedHotels(int userId);
     }
 }

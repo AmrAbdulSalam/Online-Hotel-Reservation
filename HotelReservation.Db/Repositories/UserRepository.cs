@@ -80,5 +80,19 @@ namespace HotelReservation.Db.Repositories
         {
             return await _dbContext.Users.AnyAsync(x => x.Id == userId);
         }
+
+        public List<Hotel> RecentlyVisitedHotels(int userId)
+        {
+            var recentlyVisitedHotels = _dbContext.Users
+                .Where(x => x.Id == userId)
+                .SelectMany(x => x.Reservations)
+                .OrderByDescending(x => x.Id)
+                .Take(5)
+                .Select(x => x.Room.Hotel)
+                .Distinct()
+                .ToList();
+
+            return _mapper.Map<List<Hotel>>(recentlyVisitedHotels);
+        }
     }
 }

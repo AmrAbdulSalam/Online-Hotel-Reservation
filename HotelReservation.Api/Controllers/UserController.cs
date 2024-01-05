@@ -45,6 +45,13 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _userService.GetAllUsersAsync(pageNumber, pageSize));
         }
 
+        [HttpGet("{userId}/recently-visited")]
+        [ProducesResponseType(typeof(List<Hotel>), StatusCodes.Status200OK)]
+        public ActionResult<List<Hotel>> RecentlyVisitedHotels(int userId)
+        {
+            return Ok(_userService.RecentlyVisitedHotels(userId));
+        }
+
         [HttpGet("{userId}" , Name = "GetUserById")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

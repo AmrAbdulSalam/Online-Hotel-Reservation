@@ -33,6 +33,11 @@ namespace HotelReservation.Application.Services
             return await _userRepository.GetUserByIdAsync(userId);
         }
 
+        public List<Hotel> RecentlyVisitedHotels(int userId)
+        {
+            return _userRepository.RecentlyVisitedHotels(userId);
+        }
+
         public Task UpdateUserAsync(User user)
         {
             return _userRepository.UpdateUserAsync(user);
