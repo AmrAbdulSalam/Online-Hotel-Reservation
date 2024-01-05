@@ -42,6 +42,13 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _cityService.GetAllCitiesAsync(pageNumber, pageSize));
         }
 
+        [HttpGet("most-visited-cities")]
+        [ProducesResponseType(typeof(List<City>), StatusCodes.Status200OK)]
+        public ActionResult<List<City>> MostVistedCities()
+        {
+            return Ok(_cityService.MostVistedCities());
+        }
+
         [HttpGet("{cityId}" , Name ="GetCityById")]
         [ProducesResponseType(typeof(City), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

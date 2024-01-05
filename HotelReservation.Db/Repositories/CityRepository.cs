@@ -80,5 +80,20 @@ namespace HotelReservation.Db.Repositories
 
             _dbContext.SaveChanges();
         }
+
+        public List<City> MostVistedCities()
+        {
+            var mostVisitedCities = _dbContext.Reservations
+                .Include(x => x.Room)
+                    .ThenInclude(x => x.Hotel)
+                        .ThenInclude(x => x.City)
+                .GroupBy(x => x.Room.Hotel.City)
+                .OrderByDescending(x => x.Count())
+                .Select(x => x.Key)
+                .Take(5)
+            .ToList();
+
+            return _mapper.Map<List<City>>(mostVisitedCities);
+        }
     }
 }

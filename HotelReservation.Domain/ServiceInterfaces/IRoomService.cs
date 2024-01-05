@@ -15,5 +15,7 @@ namespace HotelReservation.Domain.ServiceInterfaces
         Task DeleteRoomAsync(int roomId);
 
         Task<bool> RoomExists(int roomId);
+
+        FeaturedDeal FeaturedDealByRoomId(int roomId);
     }
 }

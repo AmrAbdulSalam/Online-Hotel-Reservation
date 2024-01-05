@@ -59,6 +59,21 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _roomService.GetRoomByIdAsync(roomId));
         }
 
+        [HttpGet("{roomId}/featured-deal")]
+        [ProducesResponseType(typeof(FeaturedDeal), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<FeaturedDeal>> FeaturedDealByRoomId(int roomId)
+        {
+            var roomExists = await _roomService.RoomExists(roomId);
+
+            if (!roomExists)
+            {
+                return NotFound($"Room with ID {roomId} not found");
+            }
+
+            return Ok(_roomService.FeaturedDealByRoomId(roomId));
+        }
+
         [HttpPost]
         [ProducesResponseType(typeof(Room), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]

@@ -80,5 +80,15 @@ namespace HotelReservation.Db.Repositories
 
             _dbContext.SaveChanges();
         }
+
+        public FeaturedDeal FeaturedDealByRoomId(int roomId)
+        {
+            var hotelWithFeaturedDeal = _dbContext.Rooms
+            .Where(x => x.Id == roomId)
+            .SelectMany(x => x.Hotel.FeaturedDeals)
+            .FirstOrDefault();
+
+            return _mapper.Map<FeaturedDeal>(hotelWithFeaturedDeal);
+        }
     }
 }

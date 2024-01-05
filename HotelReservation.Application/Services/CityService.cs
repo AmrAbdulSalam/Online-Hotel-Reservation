@@ -38,6 +38,11 @@ namespace HotelReservation.Application.Services
             return await _cityRepository.GetCityByIdAsync(cityId);
         }
 
+        public List<City> MostVistedCities()
+        {
+            return _cityRepository.MostVistedCities();
+        }
+
         public async Task UpdateCityAsync(City city)
         {
             await _cityRepository.UpdateCityAsync(city);
