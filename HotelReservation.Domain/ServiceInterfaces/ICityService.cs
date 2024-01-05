@@ -15,5 +15,7 @@ namespace HotelReservation.Domain.ServiceInterfaces
         Task DeleteCityAsync(int cityId);
 
         Task<bool> CityExists(int cityId);
+
+        List<City> MostVistedCities();
     }
 }
