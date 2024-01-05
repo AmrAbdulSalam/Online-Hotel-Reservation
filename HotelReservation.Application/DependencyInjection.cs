@@ -21,6 +21,8 @@ namespace HotelReservation.Application
 
             services.AddTransient<IEmailSenderService , EmailSenderService>();
 
+            services.AddTransient<IFormCreater , FormCreater>();
+
             return services;
         }
     }
