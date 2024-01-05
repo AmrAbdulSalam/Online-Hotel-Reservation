@@ -96,7 +96,15 @@ namespace HotelReservation.Api.Controllers
 
             var mappedReservation = _mapper.Map<Reservation>(newReservation);
 
-            mappedReservation.UpdatePrice(room.PricePerNight, 0);
+            if (newReservation.IsFeaturedDeal)
+            {
+                var featuedDeal = _roomService.FeaturedDealByRoomId(newReservation.RoomId);
+                mappedReservation.UpdatePrice(room.PricePerNight, featuedDeal.Discount);
+            }
+            else
+            {
+                mappedReservation.UpdatePrice(room.PricePerNight, 0);
+            }
 
             mappedReservation.Id = await _reservationService.AddReservationAsync(mappedReservation);
 
