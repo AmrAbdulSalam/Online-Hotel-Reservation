@@ -23,6 +23,11 @@ namespace HotelReservation.Application.Services
             await _roomRepository.DeleteRoomAsync(roomId);
         }
 
+        public FeaturedDeal FeaturedDealByRoomId(int roomId)
+        {
+            return _roomRepository.FeaturedDealByRoomId(roomId);
+        }
+
         public async Task<List<Room>> GetAllRoomsAsync(int pageNumber, int pageSize)
         {
             return await _roomRepository.GetAllRoomsAsync(pageNumber, pageSize);
