@@ -19,6 +19,10 @@ namespace HotelReservation.Application
 
             services.AddSingleton<IEncryptionService , EncryptionService>();
 
+            services.AddTransient<IEmailSenderService , EmailSenderService>();
+
+            services.AddTransient<IFormCreater , FormCreater>();
+
             return services;
         }
     }

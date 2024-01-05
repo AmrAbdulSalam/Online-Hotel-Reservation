@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using HotelReservation.Api.Models;
+using HotelReservation.Domain;
 using HotelReservation.Domain.Models;
 using HotelReservation.Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +16,18 @@ namespace HotelReservation.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IValidator<ReservationDTO> _validator;
         private readonly IRoomService _roomService;
+        private readonly IFormCreater _formCreater;
+        private readonly IEmailSenderService _emailSenderService;
 
         public ReservationController(IReservationService reservationService, IMapper mapper, 
-            IValidator<ReservationDTO> validator, IRoomService roomService, IFeaturedDealService featuredDealService)
+            IValidator<ReservationDTO> validator, IRoomService roomService, IFormCreater formCreater, IEmailSenderService emailSenderService)
         {
             _reservationService = reservationService ?? throw new ArgumentNullException(nameof(reservationService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
             _roomService = roomService ?? throw new ArgumentNullException(nameof(roomService));
+            _formCreater = formCreater ?? throw new ArgumentNullException(nameof(formCreater));
+            _emailSenderService = emailSenderService ?? throw new ArgumentNullException(nameof(emailSenderService));
         }
 
         [HttpGet]
@@ -105,6 +110,12 @@ namespace HotelReservation.Api.Controllers
             {
                 mappedReservation.UpdatePrice(room.PricePerNight, 0);
             }
+
+            var form = await _formCreater.CreateFormAsync(mappedReservation);
+
+            mappedReservation.ReservationInfoPath = form;
+
+            await _emailSenderService.SendConfirmationEmail(mappedReservation);
 
             mappedReservation.Id = await _reservationService.AddReservationAsync(mappedReservation);
 
