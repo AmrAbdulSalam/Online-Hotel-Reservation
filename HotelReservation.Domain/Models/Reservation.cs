@@ -9,6 +9,7 @@ namespace HotelReservation.Domain.Models
         public double Price { get; private set; }
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
+        public string ReservationInfoPath { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
         public int RoomId { get; set; }
@@ -27,7 +28,7 @@ namespace HotelReservation.Domain.Models
             var referenceNumber = new string(Enumerable.Repeat(chars, 8)
               .Select(s => s[random.Next(s.Length)]).ToArray());
 
-            return $"REF-{referenceNumber}-{RoomId}";
+            return $"REF-{referenceNumber}";
         }
 
         public void UpdatePrice(double originalPrice, double discount)
