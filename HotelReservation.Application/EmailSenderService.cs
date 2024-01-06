@@ -4,6 +4,7 @@ using HotelReservation.Domain;
 using HotelReservation.Domain.Models;
 using HotelReservation.Domain.RepositoryInterfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace HotelReservation.Application
 {
@@ -11,11 +12,13 @@ namespace HotelReservation.Application
     {
         private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepository;
+        private readonly ILogger<EmailSenderService> _logger;
 
-        public EmailSenderService(IConfiguration configuration, IUserRepository userRepository)
+        public EmailSenderService(IConfiguration configuration, IUserRepository userRepository, ILogger<EmailSenderService> logger)
         {
             _configuration = configuration;
             _userRepository = userRepository;
+            _logger = logger;
         }
 
         public async Task<bool> SendConfirmationEmail(Reservation reservation)
@@ -54,6 +57,7 @@ namespace HotelReservation.Application
             }
             catch (Exception ex) 
             {
+                _logger.LogError(ex, "Error while sending mail");
                 return false;
             }
         }
