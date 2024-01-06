@@ -4,6 +4,7 @@ using FluentValidation;
 using HotelReservation.Domain.ServiceInterfaces;
 using HotelReservation.Api.Models;
 using HotelReservation.Domain.Models;
+using HotelReservation.Application.Services;
 
 namespace HotelReservation.Api.Controllers
 {
@@ -28,8 +29,18 @@ namespace HotelReservation.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<Hotel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<Hotel>>> GetAllHotelsAsync(int pageNumber = 0, int pageSize = 5)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<Hotel>>> GetAllHotelsAsync(int pageNumber = 0, int pageSize = 5, string? hotelName = "")
         {
+            var hotels = await _hotelService.GetAllHotelsAsync(0, int.MaxValue);
+
+            if (!string.IsNullOrWhiteSpace(hotelName))
+            {
+                hotels = hotels.Where(city => city.Name.Contains(hotelName, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                if (hotels.Count == 0) return NotFound("Hotel Not Found");
+            }
+
             const int maxPageSize = 10;
 
             if (pageNumber < 0)
@@ -42,7 +53,9 @@ namespace HotelReservation.Api.Controllers
                 return BadRequest($"Page size should be between 1 and {maxPageSize}.");
             }
 
-            return Ok(await _hotelService.GetAllHotelsAsync(pageNumber, pageSize));
+            var paggingHotels = hotels.Skip(pageNumber * pageSize).Take(pageSize).ToList();
+
+            return Ok(paggingHotels);
         }
 
         [HttpGet("{hotelId}", Name = "GetHotelById")]
