@@ -2,6 +2,7 @@
 using System.Text;
 using HotelReservation.Domain;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace HotelReservation.Application
 {
@@ -9,61 +10,79 @@ namespace HotelReservation.Application
     {
         private readonly string Key;
         private readonly string IV;
+        private readonly ILogger<EncryptionService> _logger;
 
-        public EncryptionService(IConfiguration configuration)
+        public EncryptionService(IConfiguration configuration, ILogger<EncryptionService> logger)
         {
             Key = configuration["EncryptionSettings:Key"];
             IV = configuration["EncryptionSettings:IV"];
+            _logger = logger;
         }
 
         public string Encrypt(string plainText)
         {
-            byte[] encryptedBytes;
-            using (Aes aesAlg = Aes.Create())
+            try
             {
-                aesAlg.Key = Encoding.UTF8.GetBytes(Key);
-                aesAlg.IV = Encoding.UTF8.GetBytes(IV);
-
-                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-
-                using (MemoryStream msEncrypt = new MemoryStream())
+                byte[] encryptedBytes;
+                using (Aes aesAlg = Aes.Create())
                 {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    aesAlg.Key = Encoding.UTF8.GetBytes(Key);
+                    aesAlg.IV = Encoding.UTF8.GetBytes(IV);
+
+                    ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                    using (MemoryStream msEncrypt = new MemoryStream())
                     {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                         {
-                            swEncrypt.Write(plainText);
+                            using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                            {
+                                swEncrypt.Write(plainText);
+                            }
+                            encryptedBytes = msEncrypt.ToArray();
                         }
-                        encryptedBytes = msEncrypt.ToArray();
                     }
                 }
+                return Convert.ToBase64String(encryptedBytes);
             }
-            return Convert.ToBase64String(encryptedBytes);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while Encrypting password");
+                return null;
+            }
         }
 
         public string Decrypt(string cipherText)
         {
-            string plaintext = null;
-            byte[] cipherBytes = Convert.FromBase64String(cipherText);
-            using (Aes aesAlg = Aes.Create())
+            try
             {
-                aesAlg.Key = Encoding.UTF8.GetBytes(Key);
-                aesAlg.IV = Encoding.UTF8.GetBytes(IV);
-
-                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-                using (MemoryStream msDecrypt = new MemoryStream(cipherBytes))
+                string plaintext = null;
+                byte[] cipherBytes = Convert.FromBase64String(cipherText);
+                using (Aes aesAlg = Aes.Create())
                 {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    aesAlg.Key = Encoding.UTF8.GetBytes(Key);
+                    aesAlg.IV = Encoding.UTF8.GetBytes(IV);
+
+                    ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                    using (MemoryStream msDecrypt = new MemoryStream(cipherBytes))
                     {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                         {
-                            plaintext = srDecrypt.ReadToEnd();
+                            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                            {
+                                plaintext = srDecrypt.ReadToEnd();
+                            }
                         }
                     }
                 }
+                return plaintext;
             }
-            return plaintext;
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error while Decrypting");
+                return null;
+            }
         }
     }
 }
