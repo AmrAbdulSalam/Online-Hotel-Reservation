@@ -94,5 +94,13 @@ namespace HotelReservation.Db.Repositories
 
             return _mapper.Map<List<Hotel>>(recentlyVisitedHotels);
         }
+
+        public User GetUserByUsername(string username)
+        {
+            var user = _dbContext.Users
+                .FirstOrDefault(x => x.Username == username);
+
+            return _mapper.Map<User>(user);
+        }
     }
 }

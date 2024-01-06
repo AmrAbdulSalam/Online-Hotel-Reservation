@@ -17,5 +17,7 @@ namespace HotelReservation.Domain.ServiceInterfaces
         Task<bool> UserExists(int userId);
 
         List<Hotel> RecentlyVisitedHotels(int userId);
+
+        public User Authenticate(string username, string password);
     }
 }

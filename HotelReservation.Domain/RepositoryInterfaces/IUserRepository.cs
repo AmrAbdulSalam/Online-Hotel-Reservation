@@ -17,5 +17,7 @@ namespace HotelReservation.Domain.RepositoryInterfaces
         Task<bool> UserExists(int userId);
 
         List<Hotel> RecentlyVisitedHotels(int userId);
+
+        User GetUserByUsername(string username);
     }
 }
