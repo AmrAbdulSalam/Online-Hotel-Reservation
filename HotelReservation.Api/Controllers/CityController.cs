@@ -25,8 +25,18 @@ namespace HotelReservation.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<City>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<City>>> GetAllCitiesAsync(int pageNumber = 0, int pageSize = 5)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<City>>> GetAllCitiesAsync(int pageNumber = 0, int pageSize = 5, string? cityName = "")
         {
+            var citites = await _cityService.GetAllCitiesAsync(0, int.MaxValue);
+
+            if (!string.IsNullOrWhiteSpace(cityName))
+            {
+                citites = citites.Where(city => city.Name.Contains(cityName, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                if (citites.Count == 0) return NotFound("City Not Found");
+            }
+
             const int maxPageSize = 10;
 
             if (pageNumber < 0)
@@ -39,7 +49,9 @@ namespace HotelReservation.Api.Controllers
                 return BadRequest($"Page size should be between 1 and {maxPageSize}.");
             }
 
-            return Ok(await _cityService.GetAllCitiesAsync(pageNumber, pageSize));
+            var paggingCities = citites.Skip(pageNumber * pageSize).Take(pageSize).ToList();
+
+            return Ok(paggingCities);
         }
 
         [HttpGet("most-visited-cities")]
