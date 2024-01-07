@@ -3,6 +3,7 @@ using FluentValidation;
 using HotelReservation.Api.Models.CityModel;
 using HotelReservation.Domain.Models;
 using HotelReservation.Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelReservation.Api.Controllers
@@ -22,10 +23,13 @@ namespace HotelReservation.Api.Controllers
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet]
         [ProducesResponseType(typeof(List<City>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<City>>> GetAllCitiesAsync(int pageNumber = 0, int pageSize = 5, string? cityName = "")
         {
             var citites = await _cityService.GetAllCitiesAsync(0, int.MaxValue);
@@ -54,16 +58,22 @@ namespace HotelReservation.Api.Controllers
             return Ok(paggingCities);
         }
 
+        [Authorize(Policy = "RequireUserOrAdminRole")]
         [HttpGet("most-visited-cities")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(List<City>), StatusCodes.Status200OK)]
         public ActionResult<List<City>> MostVistedCities()
         {
             return Ok(_cityService.MostVistedCities());
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("{cityId}" , Name ="GetCityById")]
         [ProducesResponseType(typeof(City), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<City>> GetCityById(int cityId)
         {
             var cityExists = await _cityService.CityExists(cityId);
@@ -76,9 +86,12 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _cityService.GetCityByIdAsync(cityId));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPost]
         [ProducesResponseType(typeof(City), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<City>> AddCityAsync(CityDTO newCity)
         {
             var validationResult = await _validator.ValidateAsync(newCity);
@@ -106,9 +119,12 @@ namespace HotelReservation.Api.Controllers
                 mappedCity);
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("{cityId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> DeleteCityAsync(int cityId)
         {
             var cityExists = await _cityService.CityExists(cityId);
@@ -123,9 +139,12 @@ namespace HotelReservation.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPut("{cityId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> UpdateCityAsync(int cityId , CityDTO updatedCity)
         {
