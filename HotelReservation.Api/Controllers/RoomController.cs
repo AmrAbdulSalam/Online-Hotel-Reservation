@@ -3,6 +3,7 @@ using FluentValidation;
 using HotelReservation.Api.Models;
 using HotelReservation.Domain.Models;
 using HotelReservation.Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelReservation.Api.Controllers
@@ -25,8 +26,12 @@ namespace HotelReservation.Api.Controllers
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
+        [Authorize(Policy = "RequireUserOrAdminRole")]
         [HttpGet]
         [ProducesResponseType(typeof(List<Room>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<Room>>> GetAllRoomsAsync(int pageNumber = 0, int pageSize = 5)
         {
             const int maxPageSize = 10;
@@ -44,6 +49,7 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _roomService.GetAllRoomsAsync(pageNumber, pageSize));
         }
 
+        [Authorize(Policy = "RequireUserOrAdminRole")]
         [HttpGet("{roomId}" , Name = "GetRoomById")]
         [ProducesResponseType(typeof(Room), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -59,6 +65,7 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _roomService.GetRoomByIdAsync(roomId));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("{roomId}/featured-deal")]
         [ProducesResponseType(typeof(FeaturedDeal), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -74,6 +81,7 @@ namespace HotelReservation.Api.Controllers
             return Ok(_roomService.FeaturedDealByRoomId(roomId));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPost]
         [ProducesResponseType(typeof(Room), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
@@ -127,6 +135,7 @@ namespace HotelReservation.Api.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("{roomId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -144,6 +153,7 @@ namespace HotelReservation.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPut("{roomId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
