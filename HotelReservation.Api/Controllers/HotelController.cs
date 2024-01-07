@@ -26,6 +26,39 @@ namespace HotelReservation.Api.Controllers
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
+
+        /// <summary>
+        /// Get all hotel
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="hotelName"></param>
+        /// <returns></returns>
+        /// /// <remarks>
+        /// Route Defualts:
+        ///  
+        ///     { 
+        ///     Defualt:
+        ///         PageNumber=0,
+        ///         Count=5
+        ///     
+        ///     Max:
+        ///         Count=10
+        ///     }
+        ///     
+        /// Sample request-1:
+        ///     
+        ///     GET api/hotels
+        ///     
+        /// Sample request-2:
+        ///     
+        ///     GET api/hotels?pageNumber=0&pageSize=4
+        ///     
+        /// Sample request-3:
+        ///
+        ///     GET api/hotels?hotelName=Rotana
+        /// 
+        /// </remarks>
         [Authorize(Policy = "RequireUserOrAdminRole")]
         [HttpGet]
         [ProducesResponseType(typeof(List<Hotel>), StatusCodes.Status200OK)]
@@ -61,6 +94,18 @@ namespace HotelReservation.Api.Controllers
             return Ok(paggingHotels);
         }
 
+
+        /// <summary>
+        /// Get a hotel by ID
+        /// </summary>
+        /// <param name="hotelId"></param>
+        /// <returns></returns>
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     GET api/hotels/10
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireUserOrAdminRole")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -79,6 +124,26 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _hotelService.GetHotelByIdAsync(hotelId));
         }
 
+
+        /// <summary>
+        /// Create and add a new hotel
+        /// </summary>
+        /// <param name="newHotel"></param>
+        /// <returns></returns>       
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     POST api/hotels
+        ///     {
+        ///         "Name": "Royal Suites",
+        ///         "StarRate": "3",
+        ///         "Description": "facilities to improve the quality and joy of your stay.",
+        ///         "Address": "Rafedia-Street"
+        ///         "Image" : *UploadFile*
+        ///         "CityId": 1
+        ///     }
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPost]
         [ProducesResponseType(typeof(Hotel), StatusCodes.Status201Created)]
@@ -135,6 +200,18 @@ namespace HotelReservation.Api.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Delete a hotel by ID
+        /// </summary>
+        /// <param name="hotelId"></param>
+        /// <returns></returns>        
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     DELETE api/hotels/10
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("{hotelId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -153,6 +230,27 @@ namespace HotelReservation.Api.Controllers
             return NoContent();
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hotelId"></param>
+        /// <param name="updatedHotel"></param>
+        /// <returns></returns>        
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     PUT api/hotels/10
+        ///     {
+        ///         "Name": "Royal Suites",
+        ///         "StarRate": "3",
+        ///         "Description": "facilities to improve the quality and joy of your stay.",
+        ///         "Address": "Rafedia-Street"
+        ///         "Image" : *UploadFile*
+        ///         "CityId": 1
+        ///     }
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPut("{hotelId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
