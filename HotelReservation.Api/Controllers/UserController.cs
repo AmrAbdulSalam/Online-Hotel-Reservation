@@ -4,6 +4,7 @@ using HotelReservation.Api.Models;
 using HotelReservation.Domain;
 using HotelReservation.Domain.Models;
 using HotelReservation.Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelReservation.Api.Controllers
@@ -25,9 +26,12 @@ namespace HotelReservation.Api.Controllers
             _encryptionService = encryptionService ?? throw new ArgumentNullException(nameof(encryptionService));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet]
         [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<User>>> GetAllUsersAsync(int pageNumber = 0, int pageSize = 5)
         {
             const int maxPageSize = 10;
@@ -45,16 +49,22 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _userService.GetAllUsersAsync(pageNumber, pageSize));
         }
 
+        [Authorize(Policy = "RequireUserRole")]
         [HttpGet("{userId}/recently-visited")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(List<Hotel>), StatusCodes.Status200OK)]
         public ActionResult<List<Hotel>> RecentlyVisitedHotels(int userId)
         {
             return Ok(_userService.RecentlyVisitedHotels(userId));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("{userId}" , Name = "GetUserById")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<User>> GetUserByIdAsync(int userId)
         {
             var userExists = await _userService.UserExists(userId);
@@ -101,9 +111,12 @@ namespace HotelReservation.Api.Controllers
                 mappedUser);
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("{userId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> DeleteUserAsync(int userId)
         {
             var userExists = await _userService.UserExists(userId);
@@ -118,9 +131,12 @@ namespace HotelReservation.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPut("{userId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> UpdateUserAsync(int userId , UserDTO updatedUser)
         {
