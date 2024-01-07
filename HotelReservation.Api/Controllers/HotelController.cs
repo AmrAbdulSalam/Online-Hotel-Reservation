@@ -4,7 +4,7 @@ using FluentValidation;
 using HotelReservation.Domain.ServiceInterfaces;
 using HotelReservation.Api.Models;
 using HotelReservation.Domain.Models;
-using HotelReservation.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelReservation.Api.Controllers
 {
@@ -26,10 +26,13 @@ namespace HotelReservation.Api.Controllers
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
+        [Authorize(Policy = "RequireUserOrAdminRole")]
         [HttpGet]
         [ProducesResponseType(typeof(List<Hotel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<Hotel>>> GetAllHotelsAsync(int pageNumber = 0, int pageSize = 5, string? hotelName = "")
         {
             var hotels = await _hotelService.GetAllHotelsAsync(0, int.MaxValue);
@@ -58,6 +61,9 @@ namespace HotelReservation.Api.Controllers
             return Ok(paggingHotels);
         }
 
+        [Authorize(Policy = "RequireUserOrAdminRole")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("{hotelId}", Name = "GetHotelById")]
         [ProducesResponseType(typeof(Hotel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -73,9 +79,12 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _hotelService.GetHotelByIdAsync(hotelId));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPost]
         [ProducesResponseType(typeof(Hotel), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Hotel>> AddHotelAsync([FromForm] HotelDTO newHotel)
         {
             var validationResult = await _validator.ValidateAsync(newHotel);
@@ -126,6 +135,7 @@ namespace HotelReservation.Api.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("{hotelId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -143,6 +153,7 @@ namespace HotelReservation.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPut("{hotelId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
