@@ -23,6 +23,39 @@ namespace HotelReservation.Api.Controllers
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
+
+        /// <summary>
+        /// Get all cities
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="cityName"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Route Defualts:
+        ///  
+        ///     { 
+        ///     Defualt:
+        ///         PageNumber=0,
+        ///         Count=5
+        ///     
+        ///     Max:
+        ///         Count=10
+        ///     }
+        ///     
+        /// Sample request-1:
+        ///     
+        ///     GET api/cities
+        ///     
+        /// Sample request-2:
+        /// 
+        ///     GET api/cities?pageNumber=0&pageSize=4
+        ///     
+        ///Sample request-3:
+        ///
+        ///     GET api/cities?cityName=Nablus
+        /// 
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet]
         [ProducesResponseType(typeof(List<City>), StatusCodes.Status200OK)]
@@ -58,6 +91,17 @@ namespace HotelReservation.Api.Controllers
             return Ok(paggingCities);
         }
 
+
+        /// <summary>
+        /// Trending destinations / Most visited cities
+        /// </summary>
+        /// <returns>Top 5 most visited cities</returns>
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     GET api/cities/most-visited-cities
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireUserOrAdminRole")]
         [HttpGet("most-visited-cities")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -68,6 +112,18 @@ namespace HotelReservation.Api.Controllers
             return Ok(_cityService.MostVistedCities());
         }
 
+
+        /// <summary>
+        /// Get a city by ID
+        /// </summary>
+        /// <param name="cityId"></param>
+        /// <returns></returns>
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     GET api/cities/10
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("{cityId}" , Name ="GetCityById")]
         [ProducesResponseType(typeof(City), StatusCodes.Status200OK)]
@@ -86,6 +142,24 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _cityService.GetCityByIdAsync(cityId));
         }
 
+
+        /// <summary>
+        /// Create and add a new city
+        /// </summary>
+        /// <param name="newCity"></param>
+        /// <returns></returns>
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     POST api/cities
+        ///     {
+        ///         "Name": "Nablus",
+        ///         "Country": "Palestine",
+        ///         "PostOffice": "Nablus-post",
+        ///         "Currency": "LIS"
+        ///     }
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPost]
         [ProducesResponseType(typeof(City), StatusCodes.Status201Created)]
@@ -119,6 +193,18 @@ namespace HotelReservation.Api.Controllers
                 mappedCity);
         }
 
+
+        /// <summary>
+        /// Delete a city by ID
+        /// </summary>
+        /// <param name="cityId"></param>
+        /// <returns></returns>       
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     DELETE api/cities/10
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("{cityId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -139,6 +225,25 @@ namespace HotelReservation.Api.Controllers
             return NoContent();
         }
 
+
+        /// <summary>
+        /// Update an existing city
+        /// </summary>
+        /// <param name="cityId"></param>
+        /// <param name="updatedCity"></param>
+        /// <returns></returns>      
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     PUT api/cities/10
+        ///     {
+        ///         "Name": "Nablus",
+        ///         "Country": "Palestine",
+        ///         "PostOffice": "Nablus-post",
+        ///         "Currency": "LIS"
+        ///      }
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPut("{cityId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
