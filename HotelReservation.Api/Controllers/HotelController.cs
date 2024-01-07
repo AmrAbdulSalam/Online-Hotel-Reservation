@@ -16,14 +16,17 @@ namespace HotelReservation.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IValidator<HotelDTO> _validator;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<HotelController> _logger;
         private string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-        public HotelController(IHotelService hotelService, IMapper mapper, IValidator<HotelDTO> validator, IConfiguration configuration)
+        public HotelController(IHotelService hotelService, IMapper mapper, IValidator<HotelDTO> validator, IConfiguration configuration,
+            ILogger<HotelController> logger)
         {
             _hotelService = hotelService ?? throw new ArgumentNullException(nameof(hotelService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
 
@@ -196,6 +199,7 @@ namespace HotelReservation.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Cannot create hotel");
                 return BadRequest();
             }
         }
@@ -312,6 +316,7 @@ namespace HotelReservation.Api.Controllers
             }
             catch(Exception ex)
             {
+                _logger.LogError(ex, "Cannot create hotel");
                 return BadRequest();
             }
         }
