@@ -4,7 +4,7 @@ using FluentValidation;
 using HotelReservation.Domain.ServiceInterfaces;
 using HotelReservation.Api.Models;
 using HotelReservation.Domain.Models;
-using HotelReservation.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelReservation.Api.Controllers
 {
@@ -16,20 +16,59 @@ namespace HotelReservation.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IValidator<HotelDTO> _validator;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<HotelController> _logger;
         private string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-        public HotelController(IHotelService hotelService, IMapper mapper, IValidator<HotelDTO> validator, IConfiguration configuration)
+        public HotelController(IHotelService hotelService, IMapper mapper, IValidator<HotelDTO> validator, IConfiguration configuration,
+            ILogger<HotelController> logger)
         {
             _hotelService = hotelService ?? throw new ArgumentNullException(nameof(hotelService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+
+        /// <summary>
+        /// Get all hotel
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="hotelName"></param>
+        /// <returns></returns>
+        /// /// <remarks>
+        /// Route Defualts:
+        ///  
+        ///     { 
+        ///     Defualt:
+        ///         PageNumber=0,
+        ///         Count=5
+        ///     
+        ///     Max:
+        ///         Count=10
+        ///     }
+        ///     
+        /// Sample request-1:
+        ///     
+        ///     GET api/hotels
+        ///     
+        /// Sample request-2:
+        ///     
+        ///     GET api/hotels?pageNumber=0&pageSize=4
+        ///     
+        /// Sample request-3:
+        ///
+        ///     GET api/hotels?hotelName=Rotana
+        /// 
+        /// </remarks>
+        [Authorize(Policy = "RequireUserOrAdminRole")]
         [HttpGet]
         [ProducesResponseType(typeof(List<Hotel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<Hotel>>> GetAllHotelsAsync(int pageNumber = 0, int pageSize = 5, string? hotelName = "")
         {
             var hotels = await _hotelService.GetAllHotelsAsync(0, int.MaxValue);
@@ -58,6 +97,21 @@ namespace HotelReservation.Api.Controllers
             return Ok(paggingHotels);
         }
 
+
+        /// <summary>
+        /// Get a hotel by ID
+        /// </summary>
+        /// <param name="hotelId"></param>
+        /// <returns></returns>
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     GET api/hotels/10
+        ///     
+        /// </remarks>
+        [Authorize(Policy = "RequireUserOrAdminRole")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("{hotelId}", Name = "GetHotelById")]
         [ProducesResponseType(typeof(Hotel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -73,9 +127,32 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _hotelService.GetHotelByIdAsync(hotelId));
         }
 
+
+        /// <summary>
+        /// Create and add a new hotel
+        /// </summary>
+        /// <param name="newHotel"></param>
+        /// <returns></returns>       
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     POST api/hotels
+        ///     {
+        ///         "Name": "Royal Suites",
+        ///         "StarRate": "3",
+        ///         "Description": "facilities to improve the quality and joy of your stay.",
+        ///         "Address": "Rafedia-Street"
+        ///         "Image" : *UploadFile*
+        ///         "CityId": 1
+        ///     }
+        ///     
+        /// </remarks>
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPost]
         [ProducesResponseType(typeof(Hotel), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Hotel>> AddHotelAsync([FromForm] HotelDTO newHotel)
         {
             var validationResult = await _validator.ValidateAsync(newHotel);
@@ -122,10 +199,24 @@ namespace HotelReservation.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Cannot create hotel");
                 return BadRequest();
             }
         }
 
+
+        /// <summary>
+        /// Delete a hotel by ID
+        /// </summary>
+        /// <param name="hotelId"></param>
+        /// <returns></returns>        
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     DELETE api/hotels/10
+        ///     
+        /// </remarks>
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("{hotelId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -143,6 +234,28 @@ namespace HotelReservation.Api.Controllers
             return NoContent();
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hotelId"></param>
+        /// <param name="updatedHotel"></param>
+        /// <returns></returns>        
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     PUT api/hotels/10
+        ///     {
+        ///         "Name": "Royal Suites",
+        ///         "StarRate": "3",
+        ///         "Description": "facilities to improve the quality and joy of your stay.",
+        ///         "Address": "Rafedia-Street"
+        ///         "Image" : *UploadFile*
+        ///         "CityId": 1
+        ///     }
+        ///     
+        /// </remarks>
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPut("{hotelId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -203,6 +316,7 @@ namespace HotelReservation.Api.Controllers
             }
             catch(Exception ex)
             {
+                _logger.LogError(ex, "Cannot create hotel");
                 return BadRequest();
             }
         }

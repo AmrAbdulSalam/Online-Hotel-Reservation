@@ -23,6 +23,8 @@ namespace HotelReservation.Application
 
             services.AddTransient<IFormCreater , FormCreater>();
 
+            services.AddTransient<ITokenService , TokenService>();
+
             return services;
         }
     }
