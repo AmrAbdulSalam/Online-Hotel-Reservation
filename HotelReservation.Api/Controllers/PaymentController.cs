@@ -3,6 +3,7 @@ using FluentValidation;
 using HotelReservation.Api.Models;
 using HotelReservation.Domain.Models;
 using HotelReservation.Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelReservation.Api.Controllers
@@ -22,9 +23,12 @@ namespace HotelReservation.Api.Controllers
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet]
         [ProducesResponseType(typeof(List<Payment>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<List<Payment>>> GetAllPaymentsAsync(int pageNumber = 0, int pageSize = 5)
         {
             const int maxPageSize = 10;
@@ -42,9 +46,12 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _paymentService.GetAllPaymentsAsync(pageNumber, pageSize));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("{paymentId}" , Name = "GetPaymentById")]
         [ProducesResponseType(typeof(Payment), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<Payment>> GetPaymentByIdAsync(int paymentId)
         {
             var paymentExists = await _paymentService.PaymentExists(paymentId);
@@ -57,10 +64,13 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _paymentService.GetPaymentByIdAsync(paymentId));
         }
 
+        [Authorize(Policy = "RequireUserRole")]
         [HttpPost]
         [ProducesResponseType(typeof(Payment), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Payment>> fdfd(PaymentDTO newPayment)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<Payment>> AddPaymentAsync(PaymentDTO newPayment)
         {
             var validationResult = await _validator.ValidateAsync(newPayment);
 
@@ -89,9 +99,12 @@ namespace HotelReservation.Api.Controllers
                 mappedPayment);
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("{paymentId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> DeletePaymentAsync(int paymentId)
         {
             var paymentExists = await _paymentService.PaymentExists(paymentId);
@@ -106,10 +119,13 @@ namespace HotelReservation.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPut("{paymentId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> UpdatePaymentAsync(int paymentId , PaymentDTO updatedPayment)
         {
             var paymentExists = await _paymentService.PaymentExists(paymentId);
