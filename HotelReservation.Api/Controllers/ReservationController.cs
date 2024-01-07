@@ -31,6 +31,34 @@ namespace HotelReservation.Api.Controllers
             _emailSenderService = emailSenderService ?? throw new ArgumentNullException(nameof(emailSenderService));
         }
 
+
+        /// <summary>
+        /// Get all reservations
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Route Defualts:
+        ///  
+        ///     { 
+        ///     Defualt:
+        ///         PageNumber=0,
+        ///         Count=5
+        ///     
+        ///     Max:
+        ///         Count=10
+        ///     }
+        ///     
+        /// Sample request-1:
+        ///     
+        ///     GET api/reservations
+        ///     
+        /// Sample request-2:
+        /// 
+        ///     GET api/reservations?pageNumber=0&pageSize=4
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet]
         [ProducesResponseType(typeof(List<Reservation>), StatusCodes.Status200OK)]
@@ -54,7 +82,19 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _reservationService.GetAllReservationsAsync(pageNumber, pageSize));
         }
 
-        [Authorize(Policy = "RequireAdminRole")]
+
+        /// <summary>
+        /// Get a reservation by ID
+        /// </summary>
+        /// <param name="reservationId"></param>
+        /// <returns></returns>       
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     GET api/reservations/10
+        ///     
+        /// </remarks>
+        [Authorize(Policy = "RequireUserRole")]
         [HttpGet("{reservationId}" , Name = "GetReservationById")]
         [ProducesResponseType(typeof(Reservation), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -72,6 +112,25 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _reservationService.GetReservationByIdAsync(reservationId));
         }
 
+
+        /// <summary>
+        /// Create and add a new reservation
+        /// </summary>
+        /// <param name="newReservation"></param>
+        /// <returns></returns>       
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     POST api/reservations
+        ///     {
+        ///         "IsFeaturedDeal": true,
+        ///         "CheckIn" : "2025-02-07",
+        ///         "CheckOut" : "2025-02-08",
+        ///         "UserId" : 1,
+        ///         "RoomId" : 3
+        ///     }
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireUserRole")]
         [HttpPost]
         [ProducesResponseType(typeof(Reservation), StatusCodes.Status201Created)]
@@ -137,7 +196,19 @@ namespace HotelReservation.Api.Controllers
                 mappedReservation);
         }
 
-        [Authorize(Policy = "RequireAdminRole")]
+
+        /// <summary>
+        /// Delete a reservation by ID
+        /// </summary>
+        /// <param name="reservationId"></param>
+        /// <returns></returns>        
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     DELETE api/reservations/10
+        ///     
+        /// </remarks>
+        [Authorize(Policy = "RequireUserRole")]
         [HttpDelete("{reservationId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -157,7 +228,27 @@ namespace HotelReservation.Api.Controllers
             return NoContent();
         }
 
-        [Authorize(Policy = "RequireAdminRole")]
+
+        /// <summary>
+        /// Update an existing reservation
+        /// </summary>
+        /// <param name="reservationId"></param>
+        /// <param name="updatedReservation"></param>
+        /// <returns></returns>
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     POST api/reservations
+        ///     {
+        ///         "IsFeaturedDeal": true,
+        ///         "CheckIn" : "2025-02-07",
+        ///         "CheckOut" : "2025-02-08",
+        ///         "UserId" : 1,
+        ///         "RoomId" : 3
+        ///     }
+        ///     
+        /// </remarks>
+        [Authorize(Policy = "RequireUserRole")]
         [HttpPut("{reservationId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
