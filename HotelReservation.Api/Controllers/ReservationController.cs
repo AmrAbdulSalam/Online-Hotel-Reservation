@@ -4,6 +4,7 @@ using HotelReservation.Api.Models;
 using HotelReservation.Domain;
 using HotelReservation.Domain.Models;
 using HotelReservation.Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelReservation.Api.Controllers
@@ -30,9 +31,12 @@ namespace HotelReservation.Api.Controllers
             _emailSenderService = emailSenderService ?? throw new ArgumentNullException(nameof(emailSenderService));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet]
         [ProducesResponseType(typeof(List<Reservation>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<Reservation>>> GetAllReservationsAsync(int pageNumber = 0, int pageSize = 5)
         {
             const int maxPageSize = 10;
@@ -50,9 +54,12 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _reservationService.GetAllReservationsAsync(pageNumber, pageSize));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("{reservationId}" , Name = "GetReservationById")]
         [ProducesResponseType(typeof(Reservation), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Reservation>> GetReservationByIdAsync(int reservationId)
         {
             var reservationExists = await _reservationService.ReservationExists(reservationId);
@@ -65,9 +72,12 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _reservationService.GetReservationByIdAsync(reservationId));
         }
 
+        [Authorize(Policy = "RequireUserRole")]
         [HttpPost]
         [ProducesResponseType(typeof(Reservation), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Reservation>> AddReservationAsync(ReservationDTO newReservation)
         {
             var validationResult = await _validator.ValidateAsync(newReservation);
@@ -127,9 +137,12 @@ namespace HotelReservation.Api.Controllers
                 mappedReservation);
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("{reservationId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> DeleteReservationAsync(int reservationId)
         {
             var reservationExists = await _reservationService.ReservationExists(reservationId);
@@ -144,10 +157,13 @@ namespace HotelReservation.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPut("{reservationId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> UpdateReservationAsync(int reservationId, ReservationDTO updatedReservation)
         {
             var reservationExists = await _reservationService.ReservationExists(reservationId);
