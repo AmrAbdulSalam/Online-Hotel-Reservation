@@ -48,6 +48,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("admin"));
     options.AddPolicy("RequireUserRole", policy => policy.RequireRole("user"));
+    options.AddPolicy("RequireUserOrAdminRole", policy => policy.RequireRole("admin","user"));
 });
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
