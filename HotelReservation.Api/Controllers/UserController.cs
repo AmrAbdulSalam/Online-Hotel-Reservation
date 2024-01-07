@@ -26,6 +26,34 @@ namespace HotelReservation.Api.Controllers
             _encryptionService = encryptionService ?? throw new ArgumentNullException(nameof(encryptionService));
         }
 
+
+        /// <summary>
+        /// Get all users
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>        
+        /// <remarks>
+        /// Route Defualts:
+        ///  
+        ///     { 
+        ///     Defualt:
+        ///         PageNumber=0,
+        ///         Count=5
+        ///     
+        ///     Max:
+        ///         Count=10
+        ///     }
+        ///     
+        /// Sample request-1:
+        ///     
+        ///     GET api/users
+        ///     
+        /// Sample request-2:
+        /// 
+        ///     GET api/users?pageNumber=0&pageSize=4
+        ///   
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet]
         [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
@@ -49,6 +77,18 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _userService.GetAllUsersAsync(pageNumber, pageSize));
         }
 
+
+        /// <summary>
+        /// Recently visited hotels by a user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>      
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     GET api/users/1/recently-visited
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireUserRole")]
         [HttpGet("{userId}/recently-visited")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -59,6 +99,18 @@ namespace HotelReservation.Api.Controllers
             return Ok(_userService.RecentlyVisitedHotels(userId));
         }
 
+
+        /// <summary>
+        /// Get a user by ID
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>        
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     GET api/users/1
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("{userId}" , Name = "GetUserById")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -77,6 +129,24 @@ namespace HotelReservation.Api.Controllers
             return Ok(await _userService.GetUserByIdAsync(userId));
         }
 
+
+        /// <summary>
+        /// Create and add a new user
+        /// </summary>
+        /// <param name="newUser"></param>
+        /// <returns></returns>     
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     POST api/users
+        ///     {
+        ///         "Username": "amr",
+        ///         "Password": "123456",
+        ///         "Email": "amrsalam@hotmail.com",
+        ///         "Role": "user"
+        ///     }
+        ///     
+        /// </remarks>
         [HttpPost]
         [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<object>), StatusCodes.Status400BadRequest)]
@@ -111,6 +181,18 @@ namespace HotelReservation.Api.Controllers
                 mappedUser);
         }
 
+
+        /// <summary>
+        /// Delete a user by ID
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>        
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     DELETE api/users/1
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("{userId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -131,6 +213,25 @@ namespace HotelReservation.Api.Controllers
             return NoContent();
         }
 
+
+        /// <summary>
+        /// Update an existing user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="updatedUser"></param>
+        /// <returns></returns>        
+        /// <remarks> 
+        /// Sample request:
+        /// 
+        ///     POST api/users
+        ///     {
+        ///         "Username": "amr",
+        ///         "Password": "123456",
+        ///         "Email": "amrsalam@hotmail.com",
+        ///         "Role": "user"
+        ///     }
+        ///     
+        /// </remarks>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPut("{userId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
