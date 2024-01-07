@@ -16,14 +16,17 @@ namespace HotelReservation.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IValidator<RoomDTO> _validator;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<RoomController> _logger;
         private string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-        public RoomController(IRoomService roomService, IMapper mapper, IValidator<RoomDTO> validator, IConfiguration configuration)
+        public RoomController(IRoomService roomService, IMapper mapper, IValidator<RoomDTO> validator, IConfiguration configuration
+            ,ILogger<RoomController> logger)
         {
             _roomService = roomService ?? throw new ArgumentNullException(nameof(roomService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [Authorize(Policy = "RequireUserOrAdminRole")]
@@ -131,6 +134,7 @@ namespace HotelReservation.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error while adding a room");
                 return BadRequest();
             }
         }
@@ -214,6 +218,7 @@ namespace HotelReservation.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error while adding a room");
                 return BadRequest();
             }
         }
