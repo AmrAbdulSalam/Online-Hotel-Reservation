@@ -53,8 +53,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-builder.Services.AddHotelReservationDbContext(
-    option => option.UseSqlServer(builder.Configuration.GetConnectionString("SQL-ConnectionString")));
+builder.Services.AddHotelReservationDbContext(builder.Configuration, builder.Environment);
 
 builder.Services.AddServices();
 
