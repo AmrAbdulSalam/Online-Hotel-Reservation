@@ -36,6 +36,11 @@ namespace HotelReservation.Db.Repositories
         {
             var user = await GetUserByIdAsync(userId);
 
+            if (user == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             var mappedUser = _mapper.Map<Models.User>(user);
 
             _dbContext.Users.Remove(mappedUser);

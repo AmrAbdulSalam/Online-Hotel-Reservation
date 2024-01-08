@@ -36,6 +36,11 @@ namespace HotelReservation.Db.Repositories
         {
             var payment = await GetPaymentByIdAsync(paymentId);
 
+            if (payment == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             var mappedPayment = _mapper.Map<Models.Payment>(payment);
 
             _dbContext.Payments.Remove(mappedPayment);

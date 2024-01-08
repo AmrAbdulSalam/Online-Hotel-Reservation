@@ -36,6 +36,11 @@ namespace HotelReservation.Db.Repositories
         {
             var featuredDeal = await GetFeaturedDealByIdAsync(featuredDealId);
 
+            if (featuredDeal == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             var mappedFeaturedDeal = _mapper.Map<Models.FeaturedDeal>(featuredDeal);
 
             _dbContext.FeaturedDeals.Remove(mappedFeaturedDeal);

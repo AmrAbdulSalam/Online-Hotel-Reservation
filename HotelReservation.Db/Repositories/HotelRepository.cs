@@ -36,6 +36,11 @@ namespace HotelReservation.Db.Repositories
         {
             var hotel = await GetHotelByIdAsync(hotelId);
 
+            if (hotel == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             var mappedHotel = _mapper.Map<Models.Hotel>(hotel);
 
             _dbContext.Hotels.Remove(mappedHotel);
