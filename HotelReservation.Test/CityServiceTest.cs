@@ -72,6 +72,30 @@ namespace HotelReservation.Test
         }
 
         [Fact]
+        public async Task CityExists_ExistingCityId_ReturnsTrue()
+        {
+            int existingCityId = 100;
+            _cityRepositoryMock.Setup(repo => repo.CityExists(existingCityId)).ReturnsAsync(true);
+            var cityService = new CityService(_cityRepositoryMock.Object);
+
+            var result = await cityService.CityExists(existingCityId);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task CityExists_NonExistingCityId_ReturnsFalse()
+        {
+            int nonExistingCityId = 9999;
+            _cityRepositoryMock.Setup(repo => repo.CityExists(nonExistingCityId)).ReturnsAsync(false);
+            var cityService = new CityService(_cityRepositoryMock.Object);
+
+            var result = await cityService.CityExists(nonExistingCityId);
+
+            Assert.False(result);
+        }
+
+        [Fact]
         public async Task DeleteCityAsync_ExistingCityId_DeletesCity()
         {
             var existingCityId = _city.Id;
