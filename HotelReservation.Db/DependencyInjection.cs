@@ -1,16 +1,32 @@
 ﻿using HotelReservation.Db.Repositories;
 using HotelReservation.Domain.RepositoryInterfaces;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace HotelReservation.Db
 {
     public static class DependencyInjection
     {
         public static IServiceCollection AddHotelReservationDbContext
-            (this IServiceCollection services, Action<DbContextOptionsBuilder> optionsAction)
+            (this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
-            services.AddDbContext<HotelReservationDbContext>(optionsAction);
+            services.AddDbContext<HotelReservationDbContext>(options =>
+            {
+                if (environment.IsDevelopment())
+                {
+                    options.UseSqlServer(configuration
+                        .GetConnectionString("SQL-ConnectionString")
+                    ?? throw new InvalidOperationException("Connection string SQL-Server not found."));
+                }
+
+                if (environment.EnvironmentName == "IntegrationTesting")
+                {
+                    options.UseInMemoryDatabase("IntegrationTestingDb");
+                }
+            });
 
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<IFeaturedDealRepository, FeaturedDealRepository>();

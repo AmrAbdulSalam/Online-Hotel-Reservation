@@ -7,6 +7,10 @@
     <UserSecretsId>268b1b99-6bc8-4339-8275-93679b3f3747</UserSecretsId>
   </PropertyGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="HotelReservation.ApiTest" />
+	</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.9.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
