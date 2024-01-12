@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  app_db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: app_db
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Amr^12345
+    ports:
+      - "1500:1433"
+  api:
+    image: docker.io/library/hotelproject
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+      - "8088:80"
+    depends_on:
+      - app_db
+    container_name: hotelproject-api
+    environment:
+     - ASPNETCORE_URLS=http://+:80
+
+volumes:
+  sqldata:
