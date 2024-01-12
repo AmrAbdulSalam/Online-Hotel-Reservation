@@ -17,14 +17,11 @@ namespace HotelReservation.Db
             {
                 if (environment.IsDevelopment())
                 {
-                    options.UseSqlServer(configuration
-                        .GetConnectionString("SQL-ConnectionString")
-                    ?? throw new InvalidOperationException("Connection string SQL-Server not found."));
+                    options.UseSqlServer(configuration.GetConnectionString("SQL-ConnectionString"));
                 }
-
-                if (environment.EnvironmentName == "IntegrationTesting")
+                else if (environment.IsProduction())
                 {
-                    options.UseInMemoryDatabase("IntegrationTestingDb");
+                    options.UseSqlServer(configuration.GetConnectionString("SQL-Development"));
                 }
             });
 
