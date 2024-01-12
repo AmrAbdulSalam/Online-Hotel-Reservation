@@ -108,9 +108,9 @@ To get started with the ASP.NET Library API, follow these steps:
 
 7.  Build and run the application :
 
-- ##### for development  : `dotnet run`.
+- ##### For Development  : `dotnet run`.
 
-- ##### for production  : `docker compose up`.
+- ##### For Production  : `docker compose up`.
 
 8.  Use the API :
 
