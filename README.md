@@ -11,10 +11,11 @@ This project aims to provide a solid foundation for a comprehensive travel and a
 3.   [Admin Functionality](#admin-functionality)
 4.   [Reservation and Payment Handling](#reservation-and-payment-handling)
 5.   [Hotel Reservation Database ERD](#hotel-reservation-database-erd)
-6.   [Dependencies](#dependencies)
-7.   [Usage](#usage)
-8.   [Testing](#testing)
-9.   [Contributing](#contributing)
+6.   [Getting Started](#getting-started)
+7.   [Dependencies](#dependencies)
+8.   [Usage](#usage)
+9.   [Testing](#testing)
+10.  [Contributing](#contributing)
 
 ## Features
 The ASP.NET Library API offers the following key features:
@@ -89,6 +90,35 @@ Payment processing is facilitated for confirmed reservations.
 
 <img width="1119" alt="Screen Shot 2023-12-30 at 2 26 09 PM" src="https://github.com/AmrAbdulSalam/Online-Hotel-Reservation/assets/46429001/0117c973-5d40-4160-bc28-229ca145da2d">
 
+## Getting Started
+
+To get started with the ASP.NET Library API, follow these steps:
+
+1.  Install Docker.
+
+2.  Clone repository : `git clone https://github.com/AmrAbdulSalam/Online-Hotel-Reservation`.
+
+3.  Navigate to the project directory: `cd .\HotelReservation`.
+
+4.  Install the dependencies: `dotnet restore`.
+
+5.  Set up the necessary information in the `appsettings.json` file.
+
+6.  Run database migrations :  `dotnet ef database update`.
+
+7.  Build and run the application :
+
+- ##### for development  : `dotnet run`.
+
+- ##### for production  : `docker compose up`.
+
+8.  Use the API :
+
+- ##### For Development  : `https://localhost:7072` 
+
+- ##### For Production  : `https://localhost:8088` 
+
+
 ## Dependencies
 
 The ASP.NET Library API has the following dependencies:
@@ -99,7 +129,7 @@ The ASP.NET Library API has the following dependencies:
 -   Other NuGet packages as specified in the project files.
 
 ## Usage
-Once the API is up and running, you can access the available endpoints using a tool like cURL, Postman, or any other HTTP client. The API documentation and interactive testing can be accessed via Swagger UI, which is available at http://localhost:5000/swagger.
+Once the API is up and running, you can access the available endpoints using a tool like cURL, Postman, or any other HTTP client. The API documentation and interactive testing can be accessed via Swagger UI, which is available at http://localhost:7072/swagger.
 
 Before accessing the protected endpoints, make sure to obtain an authentication token by calling the appropriate authentication endpoint (`/api/authentication`). Include the token in the headers of subsequent requests for authorized operations.
 
