@@ -11,11 +11,12 @@ This project aims to provide a solid foundation for a comprehensive travel and a
 3.   [Admin Functionality](#admin-functionality)
 4.   [Reservation and Payment Handling](#reservation-and-payment-handling)
 5.   [Hotel Reservation Database ERD](#hotel-reservation-database-erd)
-6.   [Getting Started](#getting-started)
-7.   [Dependencies](#dependencies)
-8.   [Usage](#usage)
-9.   [Testing](#testing)
-10.  [Contributing](#contributing)
+6.   [API Documentation](#api-documentation)
+7.   [Getting Started](#getting-started)
+8.   [Dependencies](#dependencies)
+9.   [Usage](#usage)
+10.   [Testing](#testing)
+11.  [Contributing](#contributing)
 
 ## Features
 The ASP.NET Library API offers the following key features:
@@ -89,6 +90,11 @@ Payment processing is facilitated for confirmed reservations.
 ## **Hotel Reservation Database ERD**
 
 <img width="1119" alt="Screen Shot 2023-12-30 at 2 26 09 PM" src="https://github.com/AmrAbdulSalam/Online-Hotel-Reservation/assets/46429001/0117c973-5d40-4160-bc28-229ca145da2d">
+
+## API Documentation
+
+For detailed information on how to use the API, refer to this link : `https://documenter.getpostman.com/view/26302722/2s9YsT78jg`
+
 
 ## Getting Started
 
